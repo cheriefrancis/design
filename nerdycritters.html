@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nerdy Critters — Case Study</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bronze:        #A0785A;
+      --bronze-dim:    rgba(160, 120, 90, 0.12);
+      --bronze-border: rgba(160, 120, 90, 0.28);
+      --silver:        #C8CDD4;
+      --silver-dim:    rgba(200, 205, 212, 0.1);
+      --silver-border: rgba(200, 205, 212, 0.18);
+      --bg:            #0e0f11;
+      --bg-2:          #141618;
+      --bg-card:       #1a1c1f;
+      --text:          #d4d8de;
+      --muted:         #6a7280;
+      --white:         #f0f2f5;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.7;
+    }
+
+    body::after {
+      content: ''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 998; opacity: 0.4;
+    }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1.1rem 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(14,15,17,0.92); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--silver-border);
+    }
+    .back {
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'Syne', sans-serif; font-size: 0.72rem; font-weight: 500;
+      color: var(--muted); text-decoration: none;
+      letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s;
+    }
+    .back:hover { color: var(--bronze); }
+    .back svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .nav-tags { display: flex; gap: 8px; }
+    .nav-tag { font-family: 'Syne', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 12px; border-radius: 2px; }
+    .tag-bronze { background: var(--bronze-dim); color: var(--bronze); border: 1px solid var(--bronze-border); }
+    .tag-silver { background: var(--silver-dim); color: var(--silver); border: 1px solid var(--silver-border); }
+
+    .hero {
+      padding: 8rem 5% 0; max-width: 1200px; margin: 0 auto;
+      min-height: 80vh; display: flex; flex-direction: column; justify-content: center;
+    }
+    .hero-top { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; padding-bottom: 4rem; }
+
+    .hero-eyebrow {
+      font-family: 'Syne', sans-serif; font-size: 0.68rem; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase; color: var(--bronze);
+      margin-bottom: 1.25rem; display: flex; align-items: center; gap: 10px;
+    }
+    .hero-eyebrow::before { content: ''; display: block; width: 24px; height: 1px; background: var(--bronze); }
+
+    h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.8rem, 5vw, 5rem); font-weight: 800; line-height: 0.95; color: var(--white); margin-bottom: 1.5rem; letter-spacing: -0.03em; }
+    h1 em { font-style: normal; color: var(--bronze); }
+
+    .hero-desc { font-size: 1.05rem; color: var(--muted); line-height: 1.85; margin-bottom: 2.5rem; font-weight: 300; }
+
+    .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; border: 1px solid var(--silver-border); border-radius: 6px; overflow: hidden; }
+    .meta-item { padding: 12px 16px; background: var(--bg-card); border-right: 1px solid var(--silver-border); border-bottom: 1px solid var(--silver-border); }
+    .meta-item:nth-child(even) { border-right: none; }
+    .meta-item:nth-last-child(-n+2) { border-bottom: none; }
+    .meta-label { font-family: 'Syne', sans-serif; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bronze); margin-bottom: 4px; }
+    .meta-val { font-size: 0.875rem; color: var(--text); line-height: 1.5; }
+
+    .hero-img { width: 100%; aspect-ratio: 4/3; overflow: hidden; }
+    .hero-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .hero-img-ph { width: 100%; height: 100%; background: var(--bg-2); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; }
+    .hero-img-ph svg { width: 32px; height: 32px; stroke: var(--muted); fill: none; stroke-width: 1.5; stroke-linecap: round; }
+    .hero-img-ph span { font-family: 'Syne', sans-serif; font-size: 0.7rem; color: var(--muted); letter-spacing: 0.06em; }
+
+    main { max-width: 1200px; margin: 0 auto; padding: 0 5% 7rem; }
+
+    .divider { border: none; border-top: 1px solid var(--silver-border); margin: 3.5rem 0; position: relative; }
+    .divider::after { content: attr(data-label); position: absolute; top: -9px; left: 0; font-family: 'Syne', sans-serif; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bronze); background: var(--bg); padding-right: 12px; }
+
+    .section-label { font-family: 'Syne', sans-serif; font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--bronze); margin-bottom: 0.75rem; }
+    .section-title { font-family: 'Syne', sans-serif; font-size: clamp(1.4rem, 2.5vw, 1.9rem); font-weight: 700; color: var(--white); margin-bottom: 1rem; letter-spacing: -0.02em; line-height: 1.2; }
+    .body-text { font-size: 1rem; color: var(--muted); line-height: 1.85; margin-bottom: 1rem; font-weight: 300; max-width: 1200px; }
+
+    .highlight { border-left: 2px solid var(--bronze); padding: 1rem 1.5rem; margin: 1.75rem 0; background: var(--bronze-dim); border-radius: 0 6px 6px 0; }
+    .highlight p { font-family: 'Syne', sans-serif; font-size: 0.9rem; color: var(--bronze); line-height: 1.7; font-style: italic; font-weight: 500; }
+
+    .spec-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 1.5rem 0; }
+    .spec-card { background: var(--bg-card); border: 1px solid var(--silver-border); border-radius: 6px; padding: 1rem; }
+    .spec-label { font-family: 'Syne', sans-serif; font-size: 0.58rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bronze); margin-bottom: 6px; }
+    .spec-val { font-size: 0.875rem; color: var(--text); line-height: 1.5; }
+
+    .process-list { display: flex; flex-direction: column; margin: 1.75rem 0; border: 1px solid var(--silver-border); border-radius: 6px; overflow: hidden; }
+    .process-item { display: grid; grid-template-columns: 56px 1fr; border-bottom: 1px solid var(--silver-border); }
+    .process-item:last-child { border-bottom: none; }
+    .process-num { font-family: 'Syne', sans-serif; font-size: 0.65rem; font-weight: 700; color: var(--bronze); padding: 1.1rem; border-right: 1px solid var(--silver-border); display: flex; align-items: flex-start; justify-content: center; background: var(--bg-card); }
+    .process-content { padding: 1.1rem 1.4rem; }
+    .process-content h4 { font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+    .process-content p { font-size: 0.875rem; color: var(--muted); line-height: 1.7; }
+
+    .img-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 1.5rem 0; }
+    .img-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 1.5rem 0; }
+    .img-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 1.5rem 0; }
+
+    .img-card { border-radius: 6px; overflow: hidden; border: 1px solid var(--silver-border); background: var(--bg-card); }
+    .img-card-ph { width: 100%; aspect-ratio: 4/3; background: var(--bg-2); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 6px; }
+    .img-card-ph img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .img-card-ph svg { width: 22px; height: 22px; stroke: var(--muted); fill: none; stroke-width: 1.5; stroke-linecap: round; }
+    .img-card-ph span { font-family: 'Syne', sans-serif; font-size: 0.62rem; color: var(--muted); letter-spacing: 0.05em; text-align: center; padding: 0 8px; }
+    .img-caption { padding: 8px 12px; font-size: 0.78rem; color: var(--muted); border-top: 1px solid var(--silver-border); }
+
+    .arrow-row { display: flex; align-items: center; gap: 8px; margin: 1.25rem 0; }
+    .arrow-img { flex: 1; border-radius: 6px; overflow: hidden; border: 1px solid var(--silver-border); }
+    .arrow-img-ph { width: 100%; aspect-ratio: 4/3; background: var(--bg-2); display: flex; align-items: center; justify-content: center; }
+    .arrow-img-ph img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .arrow-img-ph svg { width: 20px; height: 20px; stroke: var(--muted); fill: none; stroke-width: 1.5; stroke-linecap: round; }
+    .arrow-sep { flex-shrink: 0; color: var(--bronze); }
+    .arrow-sep svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 1.5rem 0; }
+    .result-card { border-radius: 8px; overflow: hidden; border: 1px solid var(--bronze-border); position: relative; }
+    .result-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--bronze); }
+    .result-img { width: 100%; aspect-ratio: 4/3; overflow: hidden; }
+    .result-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .result-img-ph { width: 100%; height: 100%; background: var(--bg-2); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; }
+    .result-img-ph svg { width: 28px; height: 28px; stroke: var(--bronze); fill: none; stroke-width: 1.5; opacity: 0.5; }
+    .result-img-ph span { font-family: 'Syne', sans-serif; font-size: 0.68rem; color: var(--bronze); letter-spacing: 0.06em; }
+    .result-caption { padding: 10px 14px; background: var(--bg-card); font-size: 0.8rem; color: var(--muted); }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    .hero-top > * { animation: fadeUp 0.6s ease both; }
+    .hero-top > *:nth-child(2) { animation-delay: 0.12s; }
+
+    @media (max-width: 900px) { .hero-top { grid-template-columns: 1fr; gap: 3rem; } .spec-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 768px) { .img-grid-3, .img-grid-4 { grid-template-columns: 1fr 1fr; } nav .nav-tags .nav-tag:last-child { display: none; } }
+    @media (max-width: 480px) { .img-grid-2, .result-grid { grid-template-columns: 1fr; } .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="back">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to projects
+    </a>
+    <div class="nav-tags">
+      <span class="nav-tag tag-bronze">Sand Casting</span>
+      <span class="nav-tag tag-silver">Physical Design</span>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-top">
+      <div class="hero-text">
+        <div class="hero-eyebrow">Stanford University · 2023</div>
+        <h1>Nerdy<br><em>Critters</em></h1>
+        <p class="hero-desc">A pair of animal-shaped glasses and trinket holders — designed with play-dough prototypes, modelled in CAD, 3D-printed as casting patterns, and sand-cast in bronze and aluminium.</p>
+        <div class="meta-grid">
+          <div class="meta-item">
+            <div class="meta-label">Course</div>
+            <div class="meta-val">ME103 - Product Realisation: Design and Making</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Year</div>
+            <div class="meta-val">2023</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Mediums</div>
+            <div class="meta-val">Sand Casting · 3D Printing · Hand Sanding</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Materials</div>
+            <div class="meta-val">Bronze · Aluminium</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-img">
+        <!-- Replace with: <img src="critters-hero.png" alt="Nerdy Critters finished pieces"> -->
+        <img src="nerdycritters-hero.png">
+      </div>
+    </div>
+  </section>
+
+  <main>
+
+    <hr class="divider" data-label="Brief">
+    <p class="section-label">The brief</p>
+    <p class="section-title">Design and manufacture a metal product</p>
+    <p class="body-text">The project goal was to design and manufacture a product made from metal in the Product Realisation Lab.</p>
+
+    <div class="spec-grid">
+      <div class="spec-card">
+        <div class="spec-label">Requirement</div>
+        <div class="spec-val">Metal product, sand-cast</div>
+      </div>
+      <div class="spec-card">
+        <div class="spec-label">Materials</div>
+        <div class="spec-val">Bronze · Aluminium</div>
+      </div>
+      <div class="spec-card">
+        <div class="spec-label">Components</div>
+        <div class="spec-val">2 per animal (top + base)</div>
+      </div>
+      <div class="spec-card">
+        <div class="spec-label">Finishing</div>
+        <div class="spec-val">65+ hours hand sanding</div>
+      </div>
+    </div>
+
+    <hr class="divider" data-label="Concept">
+    <p class="section-label">Concept development</p>
+    <p class="section-title">Playful and functional</p>
+    <p class="body-text">The goal was to create something both playful and functional. The concept grew from the everyday frustration of misplacing glasses and small jewellery and led to two animal-shaped holders that sit on a desk and conveniently hold items.</p>
+
+    <div class="highlight">
+      <p>An initial prototype was made from play-dough to test proportions, angles, and the distances required for the animals to visually 'wear' the glasses before translating to CAD.</p>
+    </div>
+
+    <div class="img-grid-3">
+      <div class="img-card">
+        <div class="img-card-ph">
+          <!-- Replace with: <img src="critters-sketch.png" alt="Concept sketch"> -->
+          <img src="critters-sketch.png">
+        </div>
+        <div class="img-caption">Initial concept sketch</div>
+      </div>
+      <div class="img-card">
+        <div class="img-card-ph">
+          <!-- Replace with: <img src="critters-playdough-1.png" alt="Play-dough prototype 1"> -->
+          <img src="playdough-front.png">
+        </div>
+        <div class="img-caption">Play-dough prototype — front view</div>
+      </div>
+      <div class="img-card">
+        <div class="img-card-ph">
+          <!-- Replace with: <img src="critters-playdough-2.png" alt="Play-dough prototype 2"> -->
+          <img src="playdough-side.png">
+        </div>
+        <div class="img-caption">Play-dough prototype — side view</div>
+      </div>
+    </div>
+
+    <hr class="divider" data-label="CAD">
+    <p class="section-label">CAD modelling</p>
+    <p class="section-title">Designing for sand casting</p>
+    <p class="body-text">Each critter consisted of two separate bronze or aluminium components, a top half and a base, designed so one piece rests atop the other. The top piece holds the user's glasses, while the bottom piece can hold small trinkets, while maintaining stability when assembled.</p>
+    <p class="body-text">The initial CAD was revised to have more rounded edges, no protrusions, and more draft angle. All changes were to make the pattern easier to pull from the sand mould cleanly.</p>
+
+    <div class="img-grid-2">
+      <div class="img-card">
+        <div class="img-card-ph">
+          <!-- Replace with: <img src="critters-cad-v1.png" alt="Initial CAD version"> -->
+          <img src="critters-originalCAD.png">
+        </div>
+        <div class="img-caption">Initial CAD — sharp edges, protrusions</div>
+      </div>
+      <div class="img-card">
+        <div class="img-card-ph">
+          <!-- Replace with: <img src="critters-cad-v2.png" alt="Revised CAD version"> -->
+          <img src="critters-finalCAD.png">
+        </div>
+        <div class="img-caption">Revised CAD — rounded edges, castable geometry</div>
+      </div>
+    </div>
+
+    <hr class="divider" data-label="Manufacturing">
+    <p class="section-label">Manufacturing &amp; fabrication</p>
+    <p class="section-title">3D printing, sand, and molten metal</p>
+    <p class="body-text">Manufacturing began by 3D printing the CAD designs for use as sand casting moulds. A wooden runner system was fabricated to channel molten metal into the mould silhouette. The runner was cut on a bandsaw and refined with a spindle sander to achieve the correct angles for consistent metal flow.</p>
+
+    <div class="process-list">
+      <div class="process-item">
+        <span class="process-num">01</span>
+        <div class="process-content">
+          <h4>3D print casting patterns</h4>
+          <p>CAD models 3D printed to serve as the positive patterns for the sand mould — one per component per critter</p>
+        </div>
+      </div>
+      <div class="process-item">
+        <span class="process-num">02</span>
+        <div class="process-content">
+          <h4>Fabricate wooden runner system</h4>
+          <p>Runner cut on bandsaw and refined with spindle sander. The runner channels molten metal from the pour cup into the mould cavity at the correct angles for consistent flow</p>
+        </div>
+      </div>
+      <div class="process-item">
+        <span class="process-num">03</span>
+        <div class="process-content">
+          <h4>Ram up sand mould</h4>
+          <p>~50 pounds of sand sifted and compacted tightly around the pattern and runner. The cope and drag were separated to reveal the cavity, then the 3d printed parts were pulled carefully to avoid tearing.</p>
+        </div>
+      </div>
+      <div class="process-item">
+        <span class="process-num">04</span>
+        <div class="process-content">
+          <h4>Pour molten metal</h4>
+          <p>Molten bronze and aluminium were poured into the prepared moulds. The parts were allowed to cool before breaking out of the sand</p>
+        </div>
+      </div>
+      <div class="process-item">
+        <span class="process-num">05</span>
+        <div class="process-content">
+          <h4>65+ hours of hand sanding</h4>
+          <p>Due to the organic curved forms, mechanical sanding tools couldn't reach all surfaces. Every face was finished by sanding entirely by hand using files and multiple grits of sandpaper</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- runner process -->
+    <div class="arrow-row">
+      <div class="arrow-img">
+        <div class="arrow-img-ph">
+          <!-- Replace with: <img src="critters-runner-raw.png" alt="Raw runner pieces"> -->
+          <img src="runner.png">
+        </div>
+      </div>
+      <div class="arrow-sep"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="arrow-img">
+        <div class="arrow-img-ph">
+          <!-- Replace with: <img src="critters-runner-mid.png" alt="Runner + 3D print pattern"> -->
+          <img src="runner+pieces.png">
+        </div>
+      </div>
+      <div class="arrow-sep"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="arrow-img">
+        <div class="arrow-img-ph">
+          <!-- Replace with: <img src="critters-runner-done.png" alt="Assembled runner system"> -->
+          <img src="runner and pieces.png">
+        </div>
+      </div>
+    </div>
+
+    <!-- mould photos -->
+    <div class="img-grid-2">
+      <div class="img-card">
+        <div class="img-card-ph">
+          <!-- Replace with: <img src="critters-mould-closed.png" alt="Sand mould closed"> -->
+          <img src="copedrag1.png">
+        </div>
+        <div class="img-caption">Sand mould 1</div>
+      </div>
+      <div class="img-card">
+        <div class="img-card-ph">
+          <!-- Replace with: <img src="critters-mould-open.png" alt="Sand mould opened"> -->
+          <img src="copedrag2.png">
+        </div>
+        <div class="img-caption">Sand mould 2</div>
+      </div>
+    </div>
+
+    <!-- post-cast sanding -->
+    <div class="img-grid-2">
+      <div class="img-card">
+        <div class="img-card-ph">
+          <!-- Replace with: <img src="critters-cast-raw.png" alt="Cast pieces before sanding"> -->
+          <img src="critters-not-sanded.png">
+        </div>
+        <div class="img-caption">Pre-sanded cast pieces separated from runner</div>
+      </div>
+      <div class="img-card">
+        <div class="img-card-ph">
+          <!-- Replace with: <img src="critters-sanding.png" alt="Sanding in progress"> -->
+          <img src="critter-sanded1.png">
+        </div>
+        <div class="img-caption">Sanding process image</div>
+      </div>
+    </div>
+
+    <hr class="divider" data-label="Result">
+    <p class="section-label">Final result</p>
+    <p class="section-title">The finished critters</p>
+    <p class="body-text">Two critters, one bronze, one aluminium, each consisting of a top and base that lift apart to hold glasses or small trinkets. The organic forms required entirely hand-finishing, giving each piece a slightly unique surface quality that reflects the labour involved.</p>
+
+    <div class="result-grid">
+      <div class="result-card">
+        <div class="result-img">
+          <!-- Replace with: <img src="critters-final-1.png" alt="Both critters finished"> -->
+          <img src="nerdycritters-hero.png">
+        </div>
+        <div class="result-caption">Final Product - Assembled</div>
+      </div>
+      <div class="result-card">
+        <div class="result-img">
+          <!-- Replace with: <img src="critters-final-2.png" alt="Critters holding glasses"> -->
+          <img src="nerdycritters-final2.png">
+        </div>
+        <div class="result-caption">Final Product - Separated</div>
+      </div>
+    </div>
+
+  </main>
+</body>
+</html>

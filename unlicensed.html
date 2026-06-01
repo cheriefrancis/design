@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[UN]Licensed Flesh — Case Study</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cyan: #16F6F2;
+      --cyan-dim: rgba(22, 246, 242, 0.15);
+      --cyan-border: rgba(22, 246, 242, 0.25);
+      --red: #c0392b;
+      --red-dim: rgba(192, 57, 43, 0.15);
+      --red-border: rgba(192, 57, 43, 0.3);
+      --bg: #07090d;
+      --bg-2: #0d1117;
+      --bg-card: #0f1520;
+      --text: #c8d8e8;
+      --muted: #5a7a8a;
+      --white: #e8f4f8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* scanline overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.03) 2px,
+        rgba(0,0,0,0.03) 4px
+      );
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.1rem 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 9, 13, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--cyan-border);
+    }
+
+    .nav-id {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--cyan);
+      letter-spacing: 0.08em;
+    }
+    .nav-id span { color: var(--muted); }
+
+    .back {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+    .back:hover { color: var(--cyan); }
+    .back svg {
+      width: 14px; height: 14px;
+      stroke: currentColor; fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .nav-tags { display: flex; gap: 8px; }
+
+    .tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      padding: 4px 12px;
+      border-radius: 2px;
+      letter-spacing: 0.05em;
+    }
+    .tag-cyan { background: var(--cyan-dim); color: var(--cyan); border: 1px solid var(--cyan-border); }
+    .tag-red  { background: var(--red-dim);  color: #e74c3c;    border: 1px solid var(--red-border);  }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 8rem 5% 5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .file-stamp {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .file-stamp::before {
+      content: '';
+      display: block;
+      width: 20px; height: 1px;
+      background: var(--cyan);
+    }
+
+    h1 {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(2.4rem, 4.5vw, 4rem);
+      line-height: 1.1;
+      color: var(--white);
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+    h1 .bracket { color: var(--cyan); }
+    h1 .red     { color: #e74c3c; }
+
+    .hero-desc {
+      font-size: 1.1rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 2rem;
+      font-weight: 300;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      border: 1px solid var(--cyan-border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .meta-item {
+      padding: 12px 16px;
+      background: var(--bg-card);
+      border-right: 1px solid var(--cyan-border);
+      border-bottom: 1px solid var(--cyan-border);
+    }
+    .meta-item:nth-child(even)      { border-right: none; }
+    .meta-item:nth-last-child(-n+3) { border-bottom: none; }
+
+    .meta-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--cyan);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .meta-val {
+      font-size: 0.875rem;
+      color: var(--text);
+      font-weight: 400;
+    }
+
+    /* ── HERO VISUAL — tag sits above image, bg matches site ── */
+    .hero-visual {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .screen-frame {
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--cyan-border);
+      background: var(--bg); /* matches page bg — no weird box colour */
+    }
+    .screen-frame.illegal { border-color: var(--red-border); }
+
+    /* tag row sits above the image */
+    .screen-frame-header {
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--cyan-border);
+    }
+    .screen-frame.illegal .screen-frame-header {
+      border-bottom-color: var(--red-border);
+    }
+
+    .screen-frame-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+    }
+    .screen-frame.legal  .screen-frame-label { color: var(--cyan); }
+    .screen-frame.illegal .screen-frame-label { color: #e74c3c; }
+
+    /* dot indicators */
+    .screen-frame-dots {
+      display: flex; gap: 5px; margin-left: auto;
+    }
+    .screen-frame-dots span {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+    }
+    .screen-frame.legal  .screen-frame-dots span { background: var(--cyan-border); }
+    .screen-frame.illegal .screen-frame-dots span { background: var(--red-border); }
+
+    .screen-frame-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-2);
+    }
+    .screen-frame-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 5% 7rem;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid rgba(22, 246, 242, 0.1);
+      margin: 3.5rem 0;
+      position: relative;
+    }
+    .divider::after {
+      content: attr(data-label);
+      position: absolute;
+      top: -9px; left: 0;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--cyan);
+      background: var(--bg);
+      padding-right: 12px;
+      letter-spacing: 0.1em;
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--cyan);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+      color: var(--white);
+      margin-bottom: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+    }
+
+    .body-text {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.9;
+      margin-bottom: 1rem;
+      font-weight: 300;
+    }
+
+    /* ── CONTRAST SPLIT ── */
+    .contrast-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 1.75rem 0;
+    }
+    .contrast-card {
+      border-radius: 4px;
+      padding: 1.4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .contrast-card.legal   { background: rgba(3,24,44,0.6);  border: 1px solid var(--cyan-border); }
+    .contrast-card.illegal { background: rgba(20,5,5,0.6);   border: 1px solid var(--red-border);  }
+
+    .contrast-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+    }
+    .contrast-card.legal::before   { background: var(--cyan); }
+    .contrast-card.illegal::before { background: #e74c3c; }
+
+    .contrast-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+    .contrast-card.legal   .contrast-tag { color: var(--cyan); }
+    .contrast-card.illegal .contrast-tag { color: #e74c3c; }
+
+    .contrast-card h4 {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+    .contrast-card p        { font-size: 0.875rem; line-height: 1.75; }
+    .contrast-card.legal p  { color: #6a9ab0; }
+    .contrast-card.illegal p{ color: #8a5a5a; }
+
+    /* ── PROCESS ── */
+    .process-list {
+      display: flex; flex-direction: column; gap: 0;
+      margin: 1.75rem 0;
+      border: 1px solid var(--cyan-border);
+      border-radius: 4px; overflow: hidden;
+    }
+    .process-item {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      border-bottom: 1px solid var(--cyan-border);
+    }
+    .process-item:last-child { border-bottom: none; }
+
+    .process-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--cyan);
+      padding: 1.1rem;
+      border-right: 1px solid var(--cyan-border);
+      display: flex; align-items: flex-start; justify-content: center;
+      background: var(--bg-card);
+    }
+    .process-content { padding: 1.1rem 1.4rem; }
+    .process-content h4 {
+      font-size: 0.95rem; font-weight: 500;
+      color: var(--white); margin-bottom: 5px;
+    }
+    .process-content p { font-size: 0.875rem; color: var(--muted); line-height: 1.7; }
+
+    /* ── SCREEN GRID ── */
+    .screen-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;  /* stack them instead of 2 columns */
+        gap: 14px;
+        margin: 1.75rem 0;
+    }
+
+    .screen-card-img {
+        aspect-ratio: 16/7;  /* wider/shorter so the image is bigger horizontally */
+    }
+    /*.screen-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 1.75rem 0;
+    }
+
+    .screen-card {
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+    */
+    .screen-card.legal   { border: 1px solid var(--cyan-border); }
+    .screen-card.illegal { border: 1px solid var(--red-border);  }
+
+    /* tag header above image — same pattern as hero frames */
+    .screen-card-header {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--cyan-border);
+      display: flex;
+      align-items: center;
+    }
+    .screen-card.illegal .screen-card-header { border-bottom-color: var(--red-border); }
+
+    .screen-card-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.07em;
+    }
+    .screen-card.legal   .screen-card-tag { color: var(--cyan); }
+    .screen-card.illegal .screen-card-tag { color: #e74c3c;    }
+
+    /* image box — 16:9 so landscape screenshots fit perfectly */
+    .screen-card-img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      background: var(--bg-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .screen-card-img img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .screen-card-info {
+      padding: 12px 14px;
+      background: var(--bg-card);
+    }
+    .screen-card-info h4 {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--white);
+      margin-bottom: 4px;
+      letter-spacing: 0.02em;
+    }
+    .screen-card-info p { font-size: 0.825rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── CRAFT ── */
+    .craft-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 1.75rem 0;
+    }
+
+    .craft-card {
+      background: var(--bg-card);
+      border: 1px solid var(--cyan-border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .craft-img {
+      width: 100%;
+      aspect-ratio: 4/3;   /* scales with container — no fixed px height */
+      overflow: hidden;
+      background: var(--bg-2);
+      border-bottom: 1px solid var(--cyan-border);
+    }
+    .craft-img img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .craft-info { padding: 12px 14px; }
+    .craft-info h4 {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--cyan);
+      margin-bottom: 5px;
+    }
+    .craft-info p { font-size: 0.825rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── HIGHLIGHT QUOTE ── */
+    .highlight {
+      border-left: 2px solid var(--cyan);
+      padding: 1.1rem 1.6rem;
+      margin: 1.75rem 0;
+      background: var(--cyan-dim);
+      border-radius: 0 4px 4px 0;
+    }
+    .highlight p {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--cyan);
+      line-height: 1.75;
+      font-style: italic;
+    }
+
+    /* ── GLITCH ── */
+    @keyframes glitch {
+      0%, 100% { text-shadow: none; transform: none; }
+      92%       { text-shadow: none; transform: none; }
+      93%       { text-shadow: -2px 0 #e74c3c; transform: translateX(2px); }
+      94%       { text-shadow: 2px 0 var(--cyan); transform: translateX(-2px); }
+      95%       { text-shadow: none; transform: none; }
+    }
+    h1 { animation: glitch 6s infinite; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-text    { animation: fadeUp 0.5s ease both; }
+    .hero-visual  { animation: fadeUp 0.5s ease 0.15s both; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 3rem; padding-top: 7rem; }
+    }
+    @media (max-width: 768px) {
+      .contrast-grid { grid-template-columns: 1fr; }
+      .craft-grid    { grid-template-columns: 1fr 1fr; }
+      nav .nav-tags  { display: none; }
+    }
+    @media (max-width: 480px) {
+      .screen-grid { grid-template-columns: 1fr; }
+      .craft-grid  { grid-template-columns: 1fr; }
+      .meta-grid   { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="back">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      BACK TO PROJECTS
+    </a>
+    <div class="nav-id">FILE_ID: <span>ULF-2026-CF</span></div>
+    <div class="nav-tags">
+      <span class="tag tag-cyan">LEGAL</span>
+      <span class="tag tag-red">ILLEGAL</span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-text">
+      <div class="file-stamp">University of Edinburgh · 2026</div>
+      <h1>
+        <span class="bracket">[</span>UN<span class="bracket">]</span>Licensed<br>
+        <span class="red">Flesh</span>
+      </h1>
+      <p class="hero-desc">A biopunk web experience exploring the contrast between government-approved and black-market body modification, where the interface itself tells the story.</p>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Course</div>
+          <div class="meta-val">Digital Playgrounds for the Online Public</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Year</div>
+          <div class="meta-val">2026</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Role</div>
+          <div class="meta-val"> Web Design + Code + 3D Modelling</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Tools</div>
+          <div class="meta-val">Figma · HTML/CSS/JS · Blender · Adobe Illustrator</div>
+        </div>
+        <div class="meta-item" style="grid-column: 1 / -1; border-top: 1px solid var(--cyan-border); border-right: none;">  <!-- ← spans full width -->
+            <div class="meta-label">Live Site</div>
+            <div class="meta-val">
+                <a href="https://cheriefrancis.github.io/unlicensedflesh/#" target="_blank" style="color: var(--cyan); text-decoration: none; border-bottom: 1px solid var(--cyan-border);">Visit [UN]Licensed Flesh →</a>
+                <br><br>
+                <span style="color: var(--muted); font-size: 0.8rem;">Legal site code: <span style="color: var(--cyan); font-family: 'Space Mono', monospace;">LEGAL</span></span>
+                <br>
+                <span style="color: var(--muted); font-size: 0.8rem;">Illegal site code: <span style="color: #e74c3c; font-family: 'Space Mono', monospace;">ILLEGAL</span></span>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <!-- LEGAL frame -->
+      <div class="screen-frame legal">
+        <div class="screen-frame-header">
+          <span class="screen-frame-label">NBSI — LICENSED INTERFACE</span>
+          <div class="screen-frame-dots"><span></span><span></span><span></span></div>
+        </div>
+        <div class="screen-frame-img">
+          <img src="legal-hero.png" alt="Legal NBSI interface">
+        </div>
+      </div>
+      <!-- ILLEGAL frame -->
+      <div class="screen-frame illegal">
+        <div class="screen-frame-header">
+          <span class="screen-frame-label">UNLICENSED — AT YOUR OWN RISK</span>
+          <div class="screen-frame-dots"><span></span><span></span><span></span></div>
+        </div>
+        <div class="screen-frame-img">
+          <img src="illegal-hero.png" alt="Illegal black market interface">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN -->
+  <main>
+
+    <hr class="divider" data-label="// BRIEF">
+    <p class="section-label">The brief</p>
+    <p class="section-title">Build something for the online public</p>
+    <p class="body-text">The prompt was open: create an experience under the theme of cyberpunk, designed for a public online audience. Rather than a generic neon-and-chrome aesthetic, the project became a speculative design exercise.</p>
+
+    <div class="highlight">
+      <p>What would medical body modification look like in a biopunk future, and how would the interface differ between legal and underground providers?</p>
+    </div>
+
+    <hr class="divider" data-label="// CONCEPT">
+    <p class="section-label">The concept</p>
+    <p class="section-title">Information as design language</p>
+    <p class="body-text">The core insight driving the design: legitimate and black-market services would present the same product radically differently. The legal NBSI interface gives you everything — procedure details, risk profiles, 3D body models, clinical language, reassuring UI. The illegal side gives you almost nothing — a price, a name, a booking form. That asymmetry of information is the experience.</p>
+
+    <div class="contrast-grid">
+      <div class="contrast-card legal">
+        <span class="contrast-tag">// NBSI — LICENSED</span>
+        <h4>Transparent by design</h4>
+        <p>Full procedure information, 3D anatomical previews, risk disclosure, clinical framing — the interface works to normalise what is, in reality, extreme body modification</p>
+      </div>
+      <div class="contrast-card illegal">
+        <span class="contrast-tag">// BLACK MARKET</span>
+        <h4>Deliberately opaque</h4>
+        <p>Price. Procedure name. A booking button. No explanation, no reassurance, no clinical language — the absence of information is intentional and unsettling</p>
+      </div>
+    </div>
+
+    <hr class="divider" data-label="// RESEARCH">
+    <p class="section-label">Research</p>
+    <p class="section-title">Grounding speculation in plausibility</p>
+    <p class="body-text">To make the modifications feel genuinely plausible rather than fantastical, research focused on real animal capabilities — what biological advantages do different species have, and could they be meaningfully applied to a human body? The result was a cross between eagle and octopus: visual acuity and tentacular manipulation.</p>
+    <p class="body-text">Modifications were also tested informally for the "creepy threshold" — the legal side presents them clinically enough to feel almost acceptable, while the illegal side's patchier, less seamless execution deliberately crosses into discomfort.</p>
+
+    <hr class="divider" data-label="// PROCESS">
+    <p class="section-label">Design process</p>
+    <p class="section-title">How it came together</p>
+
+    <div class="process-list">
+      <div class="process-item">
+        <span class="process-num">01</span>
+        <div class="process-content">
+          <h4>Research &amp; concept definition</h4>
+          <p>Animal capability research, speculative mod design, establishing the legal vs illegal contrast as the core design concept</p>
+        </div>
+      </div>
+      <div class="process-item">
+        <span class="process-num">02</span>
+        <div class="process-content">
+          <h4>3D asset creation in Blender</h4>
+          <p>Eye, arm (without hand), and tentacle modifications modelled from scratch. Hand and head were imported models. Legal versions are seamless and clean; illegal versions are intentionally patchy and unsettling</p>
+        </div>
+      </div>
+      <div class="process-item">
+        <span class="process-num">03</span>
+        <div class="process-content">
+          <h4>Custom icons &amp; UI frames in Illustrator</h4>
+          <p>Interface frames, iconography, and decorative elements designed to feel like a functioning medical system — clinical enough to be believable</p>
+        </div>
+      </div>
+      <div class="process-item">
+        <span class="process-num">04</span>
+        <div class="process-content">
+          <h4>Figma prototyping</h4>
+          <p>Full UI design for both sides of the experience, maintaining distinct visual languages — cyan/navy for legal, red/dark for illegal</p>
+        </div>
+      </div>
+      <div class="process-item">
+        <span class="process-num">05</span>
+        <div class="process-content">
+          <h4>Coded in HTML, CSS &amp; JavaScript</h4>
+          <p>Built as a fixed-size web experience — intentionally not responsive, reflecting the clinical, system-terminal aesthetic of a purpose-built medical interface</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" data-label="// SCREENS">
+    <p class="section-label">Selected screens</p>
+    <p class="section-title">The experience</p>
+
+    <div class="screen-grid">
+      <div class="screen-card legal">
+        <div class="screen-card-header">
+          <span class="screen-card-tag">NBSI — LICENSED</span>
+        </div>
+        <div class="screen-card-img">
+          <img src="screen-legal-home.png" alt="NBSI home screen">
+        </div>
+        <div class="screen-card-info">
+          <h4>NBSI — Home / Login</h4>
+          <p>Entry point with unique patient code system</p>
+        </div>
+      </div>
+
+      <div class="screen-card illegal">
+        <div class="screen-card-header">
+          <span class="screen-card-tag">UNLICENSED</span>
+        </div>
+        <div class="screen-card-img">
+          <img src="illegal-hero.png" alt="Illegal home screen">
+        </div>
+        <div class="screen-card-info">
+          <h4>Book at Your Own Risk</h4>
+          <p>Minimal interface — price, mod name, booking</p>
+        </div>
+      </div>
+
+      <div class="screen-card legal">
+        <div class="screen-card-header">
+          <span class="screen-card-tag">NBSI — LICENSED</span>
+        </div>
+        <div class="screen-card-img">
+          <img src="screen-mod1.png" alt="3D procedure preview">
+        </div>
+        <div class="screen-card-info">
+          <h4>Procedure Preview</h4>
+          <p>Interactive 3D body model — eagle/octopus mods</p>
+        </div>
+      </div>
+
+      <div class="screen-card illegal">
+        <div class="screen-card-header">
+          <span class="screen-card-tag">UNLICENSED</span>
+        </div>
+        <div class="screen-card-img">
+          <img src="screen-mod-confirmed.png" alt="Mod confirmed screen">
+        </div>
+        <div class="screen-card-info">
+          <h4>Mod Confirmed</h4>
+          <p>Deliberately terse confirmation — date, location, price. Nothing more</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" data-label="// CRAFT">
+    <p class="section-label">Craft</p>
+    <p class="section-title">Built from scratch</p>
+
+    <div class="craft-grid">
+      <div class="craft-card">
+        <div class="craft-img">
+          <img src="blender-models.png" alt="Blender 3D models">
+        </div>
+        <div class="craft-info">
+          <h4>// BLENDER</h4>
+          <p>3 original models built from scratch. Legal = seamless. Illegal = deliberately patchy</p>
+        </div>
+      </div>
+      <div class="craft-card">
+        <div class="craft-img">
+          <img src="unlicensed-illustrator.png" alt="Illustrator UI frames">
+        </div>
+        <div class="craft-info">
+          <h4>// ILLUSTRATOR</h4>
+          <p>Custom interface frames and iconography — clinical enough to feel like a real system</p>
+        </div>
+      </div>
+      <div class="craft-card">
+        <div class="craft-img">
+          <img src="unlicensed-code.png" alt="Code screenshot">
+        </div>
+        <div class="craft-info">
+          <h4>// CODED</h4>
+          <p>Fixed-size build — the non-responsive layout is intentional, mirroring a terminal interface</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>
