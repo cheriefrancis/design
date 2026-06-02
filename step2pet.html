@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Step2Pet — Case Study</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --teal: #1D9E75;
+      --teal-light: #E1F5EE;
+      --teal-mid: #5DCAA5;
+      --dark: #0f1a16;
+      --text: #1a2e26;
+      --muted: #5a7a6e;
+      --border: rgba(29, 158, 117, 0.15);
+      --bg: #fafcfb;
+      --card-bg: #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.2rem 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(250, 252, 251, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav .back {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.875rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    nav .back:hover { color: var(--teal); }
+    nav .back svg {
+      width: 16px; height: 16px;
+      stroke: currentColor; fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    nav .tags { display: flex; gap: 8px; }
+
+    .tag {
+      font-size: 0.75rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: var(--teal-light);
+      color: var(--teal);
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 8rem 5% 5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .hero-text h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3rem, 6vw, 5rem);
+      line-height: 1.05;
+      color: var(--dark);
+      margin-bottom: 1.25rem;
+    }
+    .hero-text h1 span { color: var(--teal); }
+
+    .hero-text p {
+      font-size: 1.1rem;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 2rem;
+      font-weight: 300;
+    }
+
+    /* meta grid — same bordered style as ULF for consistency */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .meta-item {
+      padding: 12px 16px;
+      background: var(--card-bg);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .meta-item:nth-child(even)       { border-right: none; }
+    .meta-item:nth-last-child(-n+3)  { border-bottom: none; }
+
+    .meta-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--teal);
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .meta-val {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* hero visual — overlapping phones */
+    /*.hero-visual {
+      position: relative;
+      height: 80vh;
+    }*/
+
+    .hero-visual {
+        height: auto;        /* remove fixed height */
+        width: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+    .hero-visual img {
+        width: 100%;
+        height: auto;        /* let the image define its own height */
+        object-fit: contain;
+    }
+
+    .phone {
+      position: absolute;
+      border-radius: 28px;
+      background: var(--card-bg);
+      border: 1.5px solid rgba(29, 158, 117, 0.25);
+      box-shadow: 0 24px 60px rgba(29, 158, 117, 0.12), 0 4px 16px rgba(0,0,0,0.06);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .phone-notch {
+      position: absolute;
+      top: 10px;
+      width: 60px; height: 14px;
+      background: var(--dark);
+      border-radius: 999px;
+    }
+    .phone svg   { opacity: 0.35; }
+    .phone span  { font-size: 0.7rem; color: var(--muted); text-align: center; padding: 0 12px; }
+    .phone img   { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+
+    .phone-1 { width: 155px; height: 310px; left: 10%; top: 5%;  transform: rotate(-6deg); z-index: 1; background: var(--teal-light); }
+    .phone-2 { width: 165px; height: 330px; left: 30%; top: 8%;  z-index: 3; }
+    .phone-3 { width: 155px; height: 310px; right: 5%; top: 10%; transform: rotate(5deg);  z-index: 2; background: #f0faf6; }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 5% 6rem;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 3rem 0;
+    }
+
+    .section-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--teal);
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.75rem;
+      color: var(--dark);
+      margin-bottom: 1rem;
+      font-weight: 400;
+    }
+
+    .body-text {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 1rem;
+      font-weight: 300;
+    }
+
+    /* ── INSIGHT CARDS ── */
+    .insight-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 1.5rem 0;
+    }
+
+    .insight-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.25rem;
+    }
+
+    .insight-icon {
+      width: 36px; height: 36px;
+      background: var(--teal-light);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.75rem;
+    }
+    .insight-icon svg {
+      width: 18px; height: 18px;
+      stroke: var(--teal); fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .insight-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.65; }
+
+    /* ── DECISION CARDS ── */
+    .decision-card {
+      border-left: 2px solid var(--teal-mid);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+      background: var(--card-bg);
+      border-radius: 0 12px 12px 0;
+      border-top: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .decision-title {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 0.35rem;
+    }
+    .decision-text {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* ── DESIGN SYSTEM ── */
+    .design-system-img {
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin: 1.5rem 0;
+    }
+    .design-system-img img {
+      width: 100%;
+      display: block;
+    }
+
+    /* two-up design system images */
+    .ds-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 1.5rem 0;
+    }
+    .ds-card {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+    }
+    .ds-card img {
+      width: 100%;
+      display: block;
+    }
+    .ds-card-label {
+      padding: 10px 14px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 400;
+      border-top: 1px solid var(--border);
+    }
+
+    /* placeholder for design system if no image yet */
+    .ds-ph {
+      width: 100%;
+      min-height: 200px;
+      background: var(--teal-light);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 8px;
+      margin: 1.5rem 0;
+    }
+    .ds-ph svg {
+      width: 32px; height: 32px;
+      stroke: var(--teal); fill: none;
+      stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+      opacity: 0.5;
+    }
+    .ds-ph span { font-size: 0.78rem; color: var(--teal); }
+
+    /* ── SCREEN GRID ── */
+    .screen-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 1.5rem 0;
+    }
+
+    .screen-ph {
+      aspect-ratio: 9/16;
+      background: var(--teal-light);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      border: 1px solid rgba(29,158,117,0.2);
+      overflow: hidden;
+      position: relative;
+    }
+    .screen-ph img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      position: absolute; inset: 0;
+    }
+    .screen-ph svg {
+      width: 24px; height: 24px;
+      stroke: var(--teal); fill: none;
+      stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+      opacity: 0.5;
+    }
+    .screen-caption {
+      font-size: 0.7rem;
+      color: var(--teal);
+      text-align: center;
+      padding: 0 8px;
+    }
+
+    /* ── CRAFT ── */
+    .craft-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 1.5rem 0;
+    }
+    .craft-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .craft-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: var(--teal-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 6px;
+      overflow: hidden;
+    }
+    .craft-img img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .craft-img svg {
+      width: 28px; height: 28px;
+      stroke: var(--teal); fill: none;
+      stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+      opacity: 0.5;
+    }
+    .craft-img span { font-size: 0.7rem; color: var(--teal); text-align: center; padding: 0 12px; }
+    .craft-info { padding: 1rem; }
+    .craft-info h4 { font-size: 0.875rem; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+    .craft-info p  { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+
+    .hero-eyebrow {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+  }
+
+  .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: var(--teal);
+  }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; padding-top: 6rem; }
+      .hero-visual { height: 320px; }
+      .phone-1 { width: 110px; height: 220px; }
+      .phone-2 { width: 120px; height: 240px; }
+      .phone-3 { width: 110px; height: 220px; }
+      .insight-grid, .screen-grid { grid-template-columns: 1fr 1fr; }
+      .ds-grid { grid-template-columns: 1fr; }
+      nav .tags { display: none; }
+    }
+    @media (max-width: 480px) {
+      .insight-grid  { grid-template-columns: 1fr; }
+      .craft-grid    { grid-template-columns: 1fr; }
+      .screen-grid   { grid-template-columns: 1fr 1fr; }
+      .meta-grid     { grid-template-columns: 1fr; }
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-text  { animation: fadeUp 0.6s ease both; }
+    .hero-visual{ animation: fadeUp 0.6s ease 0.15s both; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="back">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to projects
+    </a>
+    <div class="tags">
+      <span class="tag">UX Design</span>
+      <span class="tag">Mobile App</span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-text">
+      <div class="hero-eyebrow">University of Edinburgh · 2025</div>
+      <h1>Step<span>2</span>Pet</h1>
+      <p>A gamified step-tracking app that links your daily walking to a virtual pet, making fitness habitual and not pressured.</p>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Tools</div>
+          <div class="meta-val">Figma · Adobe Illustrator · Procreate · Canva</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Responsibilities</div>
+          <div class="meta-val">UX Research + Design</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Course</div>
+          <div class="meta-val">Fundamentals of UX Design</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Year</div>
+          <div class="meta-val">2025</div>
+        </div>
+        <div class="meta-item" style="grid-column: 1 / -1; border-top: 1px solid var(--border); border-right: none; border-bottom: none;">
+          <div class="meta-label">Prototype</div>
+          <div class="meta-val">
+            <a href="https://www.figma.com/proto/LJlCmqQ6VHAgBJpPoD21LV/Step2pet?node-id=353-4798&starting-point-node-id=353%3A4798&t=PHPzx3JufjV9bXVz-1" target="_blank" style="color: var(--teal); text-decoration: none; border-bottom: 1px solid rgba(29,158,117,0.3);">View Figma Prototype →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+        <img src="onboarding-pet.png" alt="Step2Pet app screens" style="width: 100%; height: 100%; object-fit: contain;">
+    </div>
+  </section>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- PROBLEM -->
+    <p class="section-label">The problem</p>
+    <h2 class="section-title">Exercise can feel like a chore</h2>
+    <p class="body-text">Young adults who work or study remotely struggle to stay physically active and without natural movement from commuting or campus life, daily step counts drop. Existing trackers feel clinical and guilt-driven, which kills long-term motivation rather than building it.</p>
+
+    <hr class="divider">
+
+    <!-- RESEARCH -->
+    <p class="section-label">Research &amp; insights</p>
+    <h2 class="section-title">What we learned from users</h2>
+    <p class="body-text">Surveys, interviews, and diary studies with young adults revealed three consistent patterns that shaped the entire design direction.</p>
+
+    <div class="insight-grid">
+      <div class="insight-card">
+        <div class="insight-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg>
+        </div>
+        <p>Walking happens incidentally - Errands, commuting, social plans result in unintentional exercise</p>
+      </div>
+      <div class="insight-card">
+        <div class="insight-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <p>Motivation rises when walking feels <strong>rewarding, social,</strong> or visually engaging</p>
+      </div>
+      <div class="insight-card">
+        <div class="insight-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <p><strong>Gamification</strong> and friendly competition increase engagement</p>
+      </div>
+    </div>
+
+    <p class="body-text">These insights pointed toward a design focused on intrinsic motivation and habit-building rather than strict fitness goals.</p>
+
+    <hr class="divider">
+
+    <!-- DECISIONS -->
+    <p class="section-label">Design decisions</p>
+    <h2 class="section-title">Why things were built this way</h2>
+
+    <div class="decision-card">
+      <div class="decision-title">Virtual pet as emotional hook</div>
+      <p class="decision-text">Pet care is unlocked only after step goals are met, directly linking physical activity to in-app progression. Creates a daily reason to return without guilt or pressure.</p>
+    </div>
+    <div class="decision-card">
+      <div class="decision-title">StepBucks reward system</div>
+      <p class="decision-text">In-app currency earned by exceeding goals and can be spent on pet customisation. Encourages incremental improvement rather than all-or-nothing thinking - missing a day doesn't feel like failure.</p>
+    </div>
+    <div class="decision-card">
+      <div class="decision-title">Friends-only leaderboard</div>
+      <p class="decision-text">Competition is limited to friends, not strangers. Adds light accountability while designed to feel fun, not judgmental.</p>
+    </div>
+    <div class="decision-card">
+      <div class="decision-title">Hand-crafted visual language</div>
+      <p class="decision-text">Pet and environment illustrations drawn in Procreate, while icons and accessories designed in Illustrator. Gives the app a warm, personal feel that is distinct from generic fitness apps.</p>
+    </div>
+
+    <hr class="divider">
+
+    <!-- DESIGN SYSTEM -->
+    <p class="section-label">Design system</p>
+    <h2 class="section-title">Building the visual language</h2>
+    <p class="body-text">A full design system was developed after producing low-fidelity wireframes. The brand/design guidelines cover typography, colour, logo, UI components, and custom assets. This kept the app visually consistent across all states and flows.</p>
+
+    <div class="ds-grid">
+      <div class="ds-card">
+        <!-- Replace with: <img src="step2pet-guidelines.png" alt="Step2Pet brand guidelines"> -->
+         <img src="Step2Pet Guidelines2.png" alt="Step2Pet brand guidelines">
+        
+        <div class="ds-card-label">Fonts, logo, colours &amp; UI components</div>
+      </div>
+      <div class="ds-card">
+        <!-- Replace with: <img src="step2pet-assets.png" alt="Step2Pet icons and illustrations"> -->
+        <img src="Step2Pet Icons and Images.png" alt="Step2Pet icons and illustrations">
+        <div class="ds-card-label">Custom icons in Illustrator &amp; illustrations in Procreate</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- SCREENS -->
+    <p class="section-label">Selected screens</p>
+    <h2 class="section-title">The final prototype</h2>
+    <p class="body-text">The prototype covers onboarding, the core pet experience, step tracking, the boutique, social features, and account management.</p>
+
+    <div class="screen-grid">
+      <!-- Replace SVG + span with <img src="your-screen.png" alt="..."> -->
+      <div class="screen-ph">
+        <img src="Welcome-portrait.png">
+      </div>
+      <div class="screen-ph">
+        <img src="Pet - Grey Dog-portrait.png">
+      </div>
+      <div class="screen-ph">
+        <img src="Activity-portrait.png">
+      </div>
+      <div class="screen-ph">
+        <img src="Pet Boutique-portrait.png">
+      </div>
+      <div class="screen-ph">
+        <img src="Leaderboard-portrait.png">
+      </div>
+      <div class="screen-ph">
+        <img src="Account-portrait.png">
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>
