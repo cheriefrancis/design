@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nailed It!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blush: #F2E4E8; --petal: #FAF3F6; --aubergine: #3D1A2E;
+      --rose: #C4637A; --dusty: #9C6070; --muted: #7A5560;
+      --card-bg: #FDFAFC; --border: #E8D5DC; --ink: #1F0F17;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--petal); color: var(--ink); font-size: 15px; line-height: 1.6; }
+
+    nav { position: sticky; top: 0; z-index: 100; background: var(--petal); border-bottom: 1px solid var(--border); padding: 16px 48px; display: flex; justify-content: space-between; align-items: center; }
+    nav a { text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500; transition: color 0.2s; }
+    nav a:hover { color: var(--rose); }
+    .nav-tags { display: flex; gap: 8px; }
+    .nav-tag { font-size: 12px; font-weight: 500; padding: 5px 14px; border-radius: 20px; background: var(--blush); border: 1px solid var(--border); color: var(--aubergine); }
+
+    /* HERO */
+    .hero { max-width: 1100px; margin: 0 auto; padding: 64px 48px 48px; }
+    .hero-top { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .eyebrow { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--rose); margin-bottom: 18px; }
+    .eyebrow::before { content: ''; display: block; width: 28px; height: 2px; background: var(--rose); }
+    .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem, 4vw, 3.4rem); font-weight: 700; line-height: 1.1; color: var(--ink); margin-bottom: 18px; }
+    .hero-desc { font-size: 1rem; color: var(--muted); line-height: 1.75; font-weight: 300; margin-bottom: 32px; }
+
+    /* meta box like Step2Pet */
+    .meta-box { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .meta-grid { display: grid; grid-template-columns: 1fr 1fr; }
+    .meta-cell { padding: 16px 20px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .meta-cell:nth-child(even) { border-right: none; }
+    .meta-cell.full { grid-column: 1 / -1; border-right: none; }
+    .meta-cell:last-child { border-bottom: none; }
+    .meta-cell:nth-last-child(2):nth-child(odd) { border-bottom: none; }
+    .meta-cell label { display: block; font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--rose); margin-bottom: 5px; }
+    .meta-cell p { font-size: 13px; color: var(--ink); line-height: 1.5; }
+    .meta-link { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: var(--rose); text-decoration: none; font-weight: 500; margin-top: 2px; }
+    .meta-link:hover { text-decoration: underline; }
+
+    /* hero image side */
+    .hero-img { border-radius: 12px; overflow: hidden; background: var(--blush); align-items: center; display:flex; }
+    .hero-img img { width: 100%; display: block; }
+    .hero-img-placeholder { aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; color: var(--dusty); font-size: 13px; font-style: italic; }
+
+    .img-strip { width: 100%; overflow: hidden; background: var(--blush); }
+    .img-strip img { width: 100%; display: block; }
+    .img-contained { max-width: 1100px; margin: 0 auto; padding: 0 48px; display: flex; justify-content: center;}
+    .img-contained img { width: 100%; max-height: 400px; width:auto; border-radius: 12px; display: inline-block; align-items: center;}
+    .img-caption { max-width: 1100px; margin: 10px auto 0; padding: 0 48px; font-size: 12px; color: var(--dusty); font-style: italic; text-align: center;}
+
+    .section { max-width: 1100px; margin: 0 auto; padding: 64px 48px; }
+    .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--rose); margin-bottom: 10px; }
+    .section h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 700; margin-bottom: 16px; color: var(--ink); }
+    .section > p { color: var(--muted); font-size: 14px; line-height: 1.8; max-width: 1100px; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 28px; }
+    .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 28px; }
+
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 24px; }
+    .card h3 { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+    .card p { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+    .accent-card { background: var(--aubergine); border-radius: 12px; padding: 40px 48px; margin-top: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+    .accent-card h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--blush); line-height: 1.3; margin-bottom: 14px; }
+    .accent-card p { font-size: 13px; color: rgba(242,228,232,0.7); line-height: 1.75; }
+    .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .stat { text-align: center; }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--blush); display: block; margin-bottom: 4px; }
+    .stat-label { font-size: 11px; color: rgba(242,228,232,0.55); line-height: 1.4; }
+
+    .journey { margin-top: 28px; }
+    .journey-step { display: grid; grid-template-columns: 160px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--border); align-items: start; }
+    .journey-step:last-child { border-bottom: none; }
+    .step-num { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dusty); }
+    .step-title { font-size: 14px; font-weight: 600; color: var(--ink); margin: 3px 0 6px; }
+    .step-desc { font-size: 13px; color: var(--muted); line-height: 1.65; }
+    .step-tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 4px; margin-top: 8px; background: rgba(196,99,122,0.1); color: var(--rose); }
+
+    .insight-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 22px; position: relative; overflow: hidden; }
+    .insight-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--rose); }
+    .insight-num { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--rose); margin-bottom: 6px; }
+    .insight-card h3 { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+    .insight-card p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+    .tech-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-top: 28px; }
+    .tech-cell { background: var(--card-bg); padding: 20px 14px; text-align: center; }
+    .tech-name { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+    .tech-role { font-size: 11px; color: var(--dusty); line-height: 1.35; }
+
+    .ai-note { background: var(--blush); border: 1px solid var(--border); border-radius: 10px; padding: 24px 28px; display: flex; gap: 16px; align-items: flex-start; margin-top: 20px; }
+    .ai-dot { width: 32px; height: 32px; border-radius: 8px; background: var(--rose); color: white; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+    .ai-note h4 { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 5px; }
+    .ai-note p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+    footer { border-top: 1px solid var(--border); padding: 28px 48px; max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    footer p { font-size: 13px; color: var(--dusty); }
+    footer a { color: var(--rose); text-decoration: none; font-size: 13px; font-weight: 500; }
+    footer a:hover { text-decoration: underline; }
+
+    /*for images separated by arrows*/
+    .image-sequence {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 1.5rem 0;
+    }
+
+    .image-sequence img {
+    width: 20%;
+    max-width: 180px;
+    border-radius: 6px;
+    border: 1px solid var(--silver-border);
+    }
+
+    .arrow {
+    font-size: 28px;
+    font-weight: 600;
+    color: #421037;
+    }
+
+    .video-container {
+    max-width: 1000px;
+    margin: 1rem auto 4rem;
+    padding: 24px;
+    background: var(--aubergine);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: 0 8px 24px rgba(61, 26, 46, 0.12);
+    color: rgba(242,228,232,0.55)
+    }
+
+    .video-container video {
+    width: 100%;
+    display: block;
+    border-radius: 12px;
+    }
+   
+
+    @media (max-width: 768px) {
+      nav { padding: 14px 20px; }
+      .hero { padding: 48px 20px 0; }
+      .hero-top { grid-template-columns: 1fr; gap: 32px; }
+      .section { padding: 48px 20px; }
+      .img-contained { padding: 0 20px; }
+      .img-caption { padding: 0 20px; }
+      .two-col, .three-col { grid-template-columns: 1fr; }
+      .accent-card { grid-template-columns: 1fr; padding: 28px; }
+      .tech-row { grid-template-columns: repeat(3, 1fr); }
+      .journey-step { grid-template-columns: 1fr; gap: 4px; }
+      footer { flex-direction: column; gap: 10px; padding: 24px 20px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">← Back to projects</a>
+  <div class="nav-tags">
+    <span class="nav-tag">UX Design</span>
+    <span class="nav-tag">MSc Dissertation</span>
+    <span class="nav-tag">Full-Stack Development</span>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-top">
+
+    <!-- LEFT: title + desc + meta box -->
+    <div>
+      <p class="eyebrow">University of Edinburgh · 2026</p>
+      <h1>Nailed It!</h1>
+      <p class="hero-desc">A virtual nail design try-on app for salons — letting clients see designs on their own hands before they book, reducing decision paralysis at the point of choice.</p>
+
+      <div class="meta-box">
+        <div class="meta-grid">
+          <div class="meta-cell">
+            <label>Tools</label>
+            <p>Figma · React · Flask · Firebase · Roboflow</p>
+          </div>
+          <div class="meta-cell">
+            <label>Responsibilities</label>
+            <p>UX Research + Design + Full-Stack Build</p>
+          </div>
+          <div class="meta-cell">
+            <label>Programme</label>
+            <p>MSc Design & Digital Media Dissertation</p>
+          </div>
+          <div class="meta-cell">
+            <label>Year</label>
+            <p>2026</p>
+          </div>
+          <div class="meta-cell full">
+            <label>Live App</label>
+            <a class="meta-link" href="https://nailed-it-frontend-ten.vercel.app/" target="_blank">View Live App →</a>
+            <p>Open on your phone for the best viewing experience.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: app screenshot -->
+    <div class="hero-img">
+      <img src="nail-hero.png" alt="Nailed It! app screens" />
+    </div>
+
+  </div>
+</div>
+
+<div class="video-container">
+  <div class="video-label" style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--blush);">Video Walkthrough</div>
+  <h2>See Nailed It! in action</h2>
+
+  <video controls preload="metadata">
+    <source src="Nailed It Video 1.mp4" type="video/mp4">
+  </video>
+  <br>
+  <p class="video-caption">
+    A 5-minute walkthrough of the Nailed It! app, from signing up through to virtual try-on and saving designs.
+  </p>
+</div>
+
+<!-- PROBLEM -->
+<div class="section">
+  <p class="section-label">The Problem</p>
+  <h2>Too many choices, not enough confidence</h2>
+  <p>Nail salons offer hundreds of designs. Clients browse on their phones and commit before they ever sit in the chair. That gap between scrolling and booking is where anxiety lives. Hick's Law and cognitive load theory both predict what users actually report: more options without context causes stalling, not confidence.</p>
+  <div class="accent-card">
+    <div>
+      <h3>Decision paralysis is a real barrier to booking</h3>
+      <p>When faced with an overwhelming library of images, clients second-guess, change their mind mid-appointment, or don't book at all. This costs salons time and clients confidence. Nailed It! doesn't reduce the options — it makes the right one feel obvious by letting clients see it on their own hand before booking an appointment.</p>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><span class="stat-num">Hick's Law</span><p class="stat-label">Decision time grows with the number of options</p></div>
+      <div class="stat"><span class="stat-num">CLT</span><p class="stat-label">Cognitive Load Theory — scrolling flat images is exhausting and information needs structure the human brain can process efficiently</p></div>
+      <div class="stat"><span class="stat-num">B2B</span><p class="stat-label">Salon subscription model — QR code + Instagram distribution</p></div>
+      <div class="stat"><span class="stat-num">CV</span><p class="stat-label">Computer vision nail segmentation + design perspective warp</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- DESIGN LIBRARY -->
+<div class="img-contained">
+  <img src="DesignLibrary.png" alt="Design library with tag filters" />
+</div>
+<p class="img-caption" style="text-align: center;">Design library with tag filters — Pop culture, French, Characters, Paid — reducing cognitive load by letting users narrow scope before committing attention.</p>
+
+<!-- USER JOURNEY -->
+<div class="section" id="research">
+  <p class="section-label">User Journey</p>
+  <h2>From browsing to booking with confidence</h2>
+  <p>The app is structured around a single flow with each stage designed in response to user research.</p>
+  <div class="journey">
+    <div class="journey-step">
+      <div><p class="step-num">Step 01</p><p class="step-title">Browse the Design Library</p></div>
+      <div><p class="step-desc">Clients browse the salon's full design library, filterable by style tags. Filtering before browsing reduces the overwhelming effect of a large catalogue and focuses attention on relevant options.</p></div>
+    </div>
+    <div class="journey-step">
+      <div><p class="step-num">Step 02</p><p class="step-title">Capture Your Hand</p></div>
+      <div><p class="step-desc">The user photographs their hand using the in-app camera or uploads from their library. Clear guidelines on hand position and lighting reduce failed detections before they happen.</p></div>
+    </div>
+    <div class="journey-step">
+      <div><p class="step-num">Step 03</p><p class="step-title">Confirm Before Processing</p></div>
+      <div><p class="step-desc">The captured image is shown for review before it's sent to the AI pipeline. This confirm/retake step was added after user testing revealed that submitting directly to an AI felt uncomfortable. Trust is built here.</p></div>
+    </div>
+    <div class="journey-step">
+      <div><p class="step-num">Step 04</p><p class="step-title">Nail Detection + Try-On</p></div>
+      <div><p class="step-desc">The image is processed by the Roboflow nail segmentation model. Detected nail regions are perspective-warped to receive the design overlay accurately across different hand angles. A swipeable design carousel lets the client try designs instantly.</p></div>
+    </div>
+    <div class="journey-step">
+      <div><p class="step-num">Step 05</p><p class="step-title">Save & Compare</p></div>
+      <div><p class="step-desc">Favourite designs can be bookmarked and revisited. Users shortlist rather than decide immediately — addressing the anxiety of a single forced choice. Swipe to delete, session persisted via localStorage.</p></div>
+    </div>
+    <div class="journey-step">
+      <div><p class="step-num">Step 06</p><p class="step-title">Book with Confidence</p></div>
+      <div><p class="step-desc">The client arrives knowing exactly what they want. The salon saves consultation time. The decision was already made — on the client's own hand, at their own pace.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- TRY-ON SCREENS -->
+<div class="image-sequence">
+  <img src="PhotoGuidelines.png" alt="Step 1">
+  <span class="arrow">›</span>
+  <img src="ConfirmImage.png" alt="Step 2">
+  <span class="arrow">›</span>
+  <img src="BedDetect.png" alt="Step 3">
+</div>
+<p class="img-caption">Try-On flow: photo guidelines → capture → confirm. Each step is a deliberate friction point designed to improve detection accuracy and user trust.</p>
+
+<div style="height:32px"></div>
+
+<!-- CORE FlOW SCREENS -->
+<div class="image-sequence">
+  <img src="DesignLibrary.png" alt="Step 1">
+  <span class="arrow">›</span>
+  <img src="DesignSaved.png" alt="Step 2">
+  <span class="arrow">›</span>
+  <img src="Save to Book.png" alt="Step 3">
+  <span class="arrow">›</span>
+  <img src="Booking Page.png" alt="Step 4">
+  <span class="arrow">›</span>
+  <img src="Upcoming Booking.png" alt="Step 5">
+</div>
+<p class="img-caption">Nail beds detected, designs overlaid via perspective warp. The carousel below the preview lets clients swap designs without retaking the photo.</p>
+
+<!-- RESEARCH INSIGHTS -->
+<div class="section">
+  <p class="section-label">Research & User Testing</p>
+  <h2>What users said, and what changed</h2>
+  <p>User research wasn't just validation — it changed the product. Several core features exist because of research and what users said, not what was originally planned.</p>
+  <div class="three-col">
+    <div class="insight-card"><p class="insight-num">Insight 01</p><h3>Live AR wasn't the priority</h3><p>Users wanted to see a design on their actual hand at their own pace, not real-time under pressure. Photo upload felt more considered and accurate.</p></div>
+    <div class="insight-card"><p class="insight-num">Insight 02</p><h3>Active tab indicators are important</h3><p>Users wanted to have an extra indication of where they are in the app. In addition to page titles, a small aubergine pill was added below the active tab.</p></div>
+    <div class="insight-card"><p class="insight-num">Insight 03</p><h3>Unfiltered libraries cause stalling</h3><p>A flat unstructured grid recreated the exact problem the app was solving. Tag-based filtering let users narrow scope before committing attention.</p></div>
+    <div class="insight-card"><p class="insight-num">Insight 04</p><h3>Bookmarking reduced anxiety</h3><p>Users wanted to shortlist, not decide immediately. Saved designs let them compare at their own pace, removing the pressure of a single forced choice.</p></div>
+    <div class="insight-card"><p class="insight-num">Insight 05</p><h3>Small details built domain trust</h3><p>The white navigation bar, a French tip reference, was noticed and appreciated. Implicit signals that the app understands its world matter to users.</p></div>
+    <div class="insight-card"><p class="insight-num">Insight 06</p><h3>B2B was the right model</h3><p>Salons, not clients, are the paying customer. Distribution via QR and Instagram embeds the tool in existing booking flows.</p></div>
+  </div>
+</div>
+
+
+<!-- TECH -->
+<div class="section">
+  <p class="section-label">Technical Build</p>
+  <h2>Research-led, AI-assisted, fully shipped</h2>
+  <p>The Nailed-It! app was built from sratch across a 10 week timeline, from research to design to full-stack implementation.</p>
+  <div class="tech-row">
+    <div class="tech-cell"><p class="tech-name">Figma</p><p class="tech-role">UI design system</p></div>
+    <div class="tech-cell"><p class="tech-name">React</p><p class="tech-role">Frontend · Vercel deploy</p></div>
+    <div class="tech-cell"><p class="tech-name">Flask</p><p class="tech-role">Backend API · Railway</p></div>
+    <div class="tech-cell"><p class="tech-name">Firebase</p><p class="tech-role">Firestore + Storage</p></div>
+    <div class="tech-cell"><p class="tech-name">Roboflow</p><p class="tech-role">Nail segmentation computer vision</p></div>
+  </div>
+  <div class="ai-note">
+    <div class="ai-dot">✦</div>
+    <div>
+      <h4>AI-assisted development</h4>
+      <p>Claude was used as a coding collaborator throughout to help with debugging, architecture decisions, and implementing the computer vision pipeline. This freed significant time to focus on the UX research and design process the dissertation was actually examining. Using AI tools deliberately and transparently is a core professional skill, and this project treated it as such.</p>
+    </div>
+  </div>
+  <div class="two-col">
+    <div class="card"><h3>The Try-On State Machine</h3><p>Capture → confirm → detection → carousel. A technically complex process made to feel effortless. Each stage has a clear purpose, exit condition, and fallback state.</p></div>
+    <div class="card"><h3>Architecture Pivots</h3><p>Gemini API was abandoned due to quota limits. MediaPipe was replaced by Roboflow for accuracy. Firebase SDK direct from React. Flask exposes only /detect and /try-on endpoints.</p></div>
+  </div>
+</div>
+
+<footer>
+  <p>Nailed It! · MSc Dissertation · University of Edinburgh 2026</p>
+  <a href="index.html">← Back to all projects</a>
+</footer>
+
+</body>
+</html>
