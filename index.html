@@ -1,256 +1,882 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Cherie's Portfolio</title>
-        <link rel="stylesheet" href="style.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cherié Francis — Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    </head>
-    <body>
-        <header class="header">
-            <a href="#" class="logo"><span>Cherié Francis</span></a>
+    :root {
+      --ink:        #1A1410;
+      --muted:      #6B5E4E;
+      --stone:      #8B7B6A;
+      --border:     #D6CCBA;
+      --bg:         #F7F4EF;
+      --bg-2:       #EDE9E2;
+      --card-bg:    #FFFFFF;
+      --green:      #4A8C3F;
+      --green-pale: #E8F5E4;
+      --green-text: #2D6B24;
+      --sky:        #5B9BD5;
+      --sky-pale:   #EAF4FC;
+    }
 
-            <ul class="nav-links">
-                <li>
-                    <a href="#about">About</a>
-                </li>
+    html { scroll-behavior: smooth; }
 
-                <!--
-                <li>
-                    <a href="#experience">Experience</a>
-                </li>
-            -->
-                <li>
-                    <a href="#projects">Projects</a>
-                </li>  
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+    }
 
-                 <li>
-                    <a href="#contact">Contact</a>
-                </li>                           
-            </ul>
+    a { color: inherit; text-decoration: none; }
 
-            <i class="fa-solid fa-bars" id="menu-icon"></i>
+    /* dot grid */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: radial-gradient(circle, #C8C0B0 1px, transparent 1px);
+      background-size: 28px 28px;
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-            <!--<button class="visit-btn">Visit Website</button>-->
-        </header>
+    /* ── HEADER ── */
+    .header {
+      position: fixed;
+      top: 1.25rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+      background: var(--ink);
+      color: white;
+      padding: 0.65rem 1.75rem;
+      border-radius: 3rem;
+      z-index: 1000;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    }
 
-        <section id="about" class="about">
-            <div class="about-container">
-                <!-- <img src="cherie profile.jpg" alt="Profile Photo" > -->
+    .logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1rem;
+      color: white;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
 
-                <div class="info-box">
+    .nav-links {
+      display: flex;
+      gap: 1.75rem;
+      list-style: none;
+    }
 
-                    <div class="text">
-                        <h3>Hi, I'm</h3>
-                        <h1>Cherié Francis</h1>
-                        <span>Product Designer</span>
-                    </div>
+    .nav-links li a {
+      position: relative;
+      color: rgba(255,255,255,0.7);
+      font-size: 0.875rem;
+      font-weight: 400;
+      transition: color 0.2s;
+    }
 
-                    <div class="btn-group">
-                        <a href="Cherie_Francis_CV_Design.pdf" target="_blank" class="btn">View CV</a>
-                        
-                        <a href="#contact" class="btn">Contact</a>
-                    </div>
+    .nav-links li a:hover { color: white; }
 
-                    <div class="socials">
-                        <a href="https://www.linkedin.com/in/cheriefrancis/" target="_blank">
-                            <i class="fa-brands fa-linkedin"></i>
-                        </a>
-                    </div>
+    .nav-links li a::before {
+      position: absolute;
+      content: '';
+      width: 0; left: 0; height: 2px;
+      top: 24px; border-radius: 1rem;
+      transition: 0.3s ease-in-out;
+      background: linear-gradient(to right, var(--green-pale), var(--sky));
+    }
 
-                    </div>
+    .nav-links li a:hover::before { width: 100%; }
+
+    .nav-cv {
+      white-space: nowrap;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--ink) !important;
+      background: white;
+      padding: 0.4rem 1.1rem;
+      border-radius: 3rem;
+      transition: background 0.2s, color 0.2s !important;
+    }
+
+    .nav-cv:hover { background: var(--green-pale); color: var(--green-text) !important; }
+    .nav-cv::before { display: none !important; }
+
+    #menu-icon { display: none; font-size: 1.5rem; color: white; cursor: pointer; }
+
+    /* ── HERO ── */
+    #about {
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-inner {
+      max-width: 1200px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+      padding: 8rem 5% 2rem;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--green-text);
+      background: var(--green-pale);
+      padding: 5px 14px;
+      border-radius: 999px;
+      margin-bottom: 1.25rem;
+      border: 1px solid rgba(74,140,63,0.2);
+    }
+
+    .hero-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2.4s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(0.65); }
+    }
+
+    .hero-text h3 {
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .hero-text h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      line-height: 1.0;
+      color: var(--ink);
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-subtitle {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      font-style: italic;
+      color: var(--green);
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-desc {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.8;
+      font-weight: 300;
+      max-width: 400px;
+      margin-bottom: 2rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .btn {
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 0.65rem 1.5rem;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    .btn-filled {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    .btn-filled:hover { background: #333; }
+
+    .socials {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .socials a {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--stone);
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .socials a:hover {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    /* ── SECTION NAV BUBBLES ── */
+    .hero-visual {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 16px;
+      height: 380px;
+    }
+
+    .section-bubble {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      color: inherit;
+      animation-fill-mode: both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-bubble::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--ink);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      border-radius: 18px;
+    }
+
+    .section-bubble:hover::before { opacity: 1; }
+
+    .section-bubble:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+      border-color: var(--ink);
+    }
+
+    .section-bubble:hover .bubble-label,
+    .section-bubble:hover .bubble-count,
+    .section-bubble:hover .bubble-desc { color: rgba(255,255,255,0.9); }
+
+    .section-bubble:hover .bubble-tag { background: rgba(255,255,255,0.15); color: white; }
+
+    .section-bubble:hover .bubble-icon { color: rgba(255,255,255,0.5); }
+
+    .bubble-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: relative;
+      z-index: 1;
+    }
+
+    .bubble-label {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1rem;
+      color: var(--ink);
+      line-height: 1.2;
+      transition: color 0.25s;
+    }
+
+    .bubble-icon {
+      font-size: 1.1rem;
+      color: var(--border);
+      transition: color 0.25s;
+    }
+
+    .bubble-bottom {
+      position: relative;
+      z-index: 1;
+      margin-top:18px;
+    }
+
+    .bubble-desc {
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-weight: 300;
+      line-height: 1.5;
+      margin-bottom: 10px;
+      transition: color 0.25s;
+    }
+
+    .bubble-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .bubble-tag {
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      padding: 3px 9px;
+      border-radius: 999px;
+      transition: all 0.25s;
+    }
+
+    /* individual bubble colours */
+    .bubble-ux   { animation: floatA 4.5s ease-in-out infinite; }
+    .bubble-game { animation: floatB 5.2s ease-in-out infinite; }
+    .bubble-eng  { animation: floatC 4.8s ease-in-out infinite; }
+    .bubble-arch { animation: floatA 5.5s ease-in-out infinite reverse; }
+
+    @keyframes floatA { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+    @keyframes floatB { 0%,100%{transform:translateY(-3px)} 50%{transform:translateY(5px)} }
+    @keyframes floatC { 0%,100%{transform:translateY(2px)} 50%{transform:translateY(-5px)} }
+
+    /* pause float on hover so translate doesn't fight */
+    .section-bubble:hover { animation-play-state: paused; }
+
+    /* skills strip */
+    .skills-strip {
+      max-width: 1200px;
+      width: 100%;
+      padding: 1.5rem 5% 3rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .skills-label {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #C8C0B0;
+      flex-shrink: 0;
+    }
+
+    .skills-items {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .skill-item {
+      font-size: 0.8rem;
+      color: var(--stone);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* ── PROJECTS ── */
+    section {
+      min-height: auto;
+      padding: 5rem 5%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .projects { padding-top: 3rem; }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .project-card {
+        padding-top: 18px;
+      display: flex;
+      flex-direction: column;
+      border: 1.5px solid var(--border);
+      border-radius: 1.25rem;
+      cursor: pointer;
+      transition: all 0.25s ease-in-out;
+      background: var(--card-bg);
+      overflow: hidden;
+    }
+
+    .project-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+      border-color: var(--ink);
+      background: var(--ink);
+    }
+
+    .project-card:hover h3 { color: white; }
+    .project-card:hover p  { color: rgba(255,255,255,0.65); }
+    .project-card:hover .btn {
+      border-color: rgba(255,255,255,0.4);
+      color: white;
+    }
+    .project-card:hover .btn:hover {
+      background: white;
+      color: var(--ink);
+    }
+
+    .card-img-wrapper {
+      width: 100%;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+    }
+
+    .card-img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .project-card:hover .card-img-wrapper img { transform: scale(1.03); }
+
+    .card-body {
+      padding: 1.25rem 1.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      text-align: center;
+      align-items: center;
+    }
+
+    .project-card h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 0.35rem;
+      transition: color 0.25s;
+    }
+
+    .project-card p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.65;
+      font-weight: 300;
+      flex: 1;
+      margin-bottom: 1.25rem;
+      transition: color 0.25s;
+    }
+
+    .project-card .btn {
+      font-size: 0.8rem;
+      padding: 0.5rem 1.25rem;
+      margin-top: auto;
+      transition: all 0.25s;
+    }
+
+    /* section labels */
+    .section-group {
+      max-width: 1200px;
+      margin: 0 auto 2rem;
+    }
+
+    .section-group-label {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-group-label::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: var(--green);
+      flex-shrink: 0;
+    }
+
+    .arch-caption {
+      max-width: 1200px;
+      margin: 1.25rem auto 0;
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--muted);
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    /* ── CONTACT ── */
+    .contact {
+      text-align: center;
+      background: var(--ink);
+      color: white;
+    }
+
+    .contact .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2rem;
+      font-weight: 400;
+      color: white;
+      margin-bottom: 2.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .contact-box {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.875rem 1.75rem;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      color: white;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+
+    .contact-item:hover {
+      background: white;
+      color: var(--ink);
+      border-color: white;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 2rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    footer ul { display: flex; gap: 1.5rem; list-style: none; }
+    footer ul a { font-size: 0.8rem; color: rgba(255,255,255,0.5); transition: color 0.2s; }
+    footer ul a:hover { color: white; }
+    .copyright { font-size: 0.75rem; color: rgba(255,255,255,0.35); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .hero-visual { height: auto; grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .header { gap: 1.5rem; padding: 0.65rem 1.25rem; }
+      .nav-links { display: none; }
+      #menu-icon { display: block; }
+      section { padding: 3rem 5%; }
+    }
+
+    @media (max-width: 480px) {
+      .projects-grid { grid-template-columns: 1fr; }
+      .hero-visual { grid-template-columns: 1fr; height: auto; }
+      .contact-box { flex-direction: column; align-items: center; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-inner > * { animation: fadeUp 0.6s ease both; }
+    .hero-inner > *:nth-child(2) { animation-delay: 0.12s; }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <a href="#" class="logo">Cherié Francis</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="Cherie_Francis_CV_Design.pdf" target="_blank" class="nav-cv">View CV</a></li>
+    </ul>
+    <i class="fa-solid fa-bars" id="menu-icon"></i>
+  </header>
+
+  <!-- HERO -->
+  <section id="about">
+    <div class="hero-inner">
+
+      <div class="hero-text">
+        <div class="hero-tag">
+          <span class="hero-dot"></span>
+          Looking for a new role · Design &amp; PM
+        </div>
+        <h3>Hi, I'm</h3>
+        <h1>Cherié Francis</h1>
+        <div class="hero-subtitle">Product Designer</div>
+        <p class="hero-desc">Engineering foundation meets interaction design. I create thoughtful products that balance function, usability, and a little bit of playfulness.</p>
+
+        <div class="btn-group">
+          <a href="Cherie Francis CV_Design.pdf" target="_blank" class="btn btn-filled">View CV</a>
+          <a href="#contact" class="btn">Get in touch</a>
+        </div>
+
+        <div class="socials">
+          <a href="https://www.linkedin.com/in/cheriefrancis/" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+          <a href="mailto:cheriefrancis5@gmail.com"><i class="fa-solid fa-envelope"></i></a>
+        </div>
+      </div>
+
+      <!-- section nav bubbles -->
+      <div class="hero-visual">
+
+        <a href="#ux-design" class="section-bubble bubble-ux">
+          <div class="bubble-top">
+            <div class="bubble-label">UX <br>Design</div>
+            <i class="fa-solid fa-pen-nib bubble-icon"></i>
+          </div>
+          <div class="bubble-bottom">
+            <div class="bubble-desc">App design, Figma, UX research</div>
+            <div class="bubble-tags">
+              <span class="bubble-tag" style="background:var(--green-pale); color:var(--green-text);">Nailed It!</span>
+              <span class="bubble-tag" style="background:var(--green-pale); color:var(--green-text);">Step2Pet</span>
             </div>
-        </section>
+          </div>
+        </a>
 
-        <section id="projects" class="projects">
-
-            <h2 class="section-title">UX Design</h2>
-
-            <div class="projects-grid">
-                <!--NAILED IT-->
-                <div class="project-card">
-                    <div class="card-img-wrapper">
-                        <img src="DesignLibrary.png">
-                    </div>
-                    <h3>Nailed It!</h3>
-                    <p>A computer vision-based nail design try-on app connecting customers to a salon's design library</p>
-                    <div class="btn-group">
-                        <a href="nailedit.html" class="btn">Learn More</a>
-                    </div>
-                </div>
-                
-                <!--STEP 2 PET-->
-                <div class="project-card">
-                    <div class="card-img-wrapper">
-                        <img src="project-1-portrait.png">
-                    </div>
-                    <h3>Step 2 Pet</h3>
-                    <p>A gamified, step-tracker app connected to a virtual pet</p>
-                    <div class="btn-group">
-                        <a href="step2pet.html" class="btn">Learn More</a>
-                    </div>
-                </div>
-
-                <!--[UN]LICENSED FLESH-->
-                <!--
-                <div class="project-card">
-                    <div class="card-img-wrapper">
-                        <img src="project-2.png">
-                    </div>
-                    <h3>[UN]Licensed Flesh</h3>
-                    <p>A biopunk, surgical procedure website showing the contrast between legal and illegal procedures</p>
-                    <div class="btn-group">
-                        <a href="unlicensed.html" class="btn">Learn More</a>
-                    </div>
-                </div> -->
-            </div> 
-
-            <br><br><br>
-            <h2 class="section-title">Game Design</h2>
-
-                <div class="projects-grid">
-                    
-                    <div class="project-card">
-                        <div class="card-img-wrapper">
-                            <img src="protect_environment.png">
-                        </div>
-                        <h3>Protect Yuh Future</h3>
-                        <p>A 2D pixel game where you need to protect your future [a plant] from an unexpected enemy.</p>
-                        <div class="btn-group">
-                            <a href="protectfuture.html" class="btn">Learn More</a>
-                        </div>
-                    </div>
-                    
-                    <!--BABBLING SECRETS-->
-                    <div class="project-card">
-                        <div class="card-img-wrapper">
-                            <img src="bs_title.png">
-                        </div>
-                        <h3>Babbling Secrets</h3>
-                        <p>A puzzle-adventure game based on the Tower of Babel theme: collapse of meaning</p>
-                        <div class="btn-group">
-                            <a href="babblingsecrets.html" class="btn">Learn More</a>
-                        </div>
-                    </div>
-            </div>          
-
-            <br><br><br>
-            <h2 class="section-title">Engineering Projects</h2>
-
-            <div class="projects-grid">
-                <!--Shuriken Drip-->
-                <div class="project-card">
-                    <div class="card-img-wrapper">
-                        <img src="shuriken-drip-hero.png">
-                    </div>
-                    <h3>Shuriken Drip</h3>
-                    <p>A spinning jewellery holder developed through CNC machining and lathe fabrication</p>
-                    <div class="btn-group">
-                        <a href="shurikendrip.html" class="btn">Learn More</a>
-                    </div>
-                </div>
-
-                <!--Nerdy Critters-->
-                <div class="project-card">
-                    <div class="card-img-wrapper">
-                        <img src="nerdycritters-hero.png">
-                    </div>
-                    <h3>Nerdy Critters</h3>
-                    <p>Animal-shaped metal glasses and trinket holders developed through sand casting</p>
-                    <div class="btn-group">
-                        <a href="nerdycritters.html" class="btn">Learn More</a>
-                    </div>
-                </div>  
-
-
-                <!--Kiss My Fish-->
-                <div class="project-card">
-                    <div class="card-img-wrapper">
-                        <img src="kissmyfish-hero.png">
-                    </div>
-                    <h3>Kiss My Fish</h3>
-                    <p>CNC-machined, fish-shaped whistle</p>
-                    <div class="btn-group">
-                        <a href="kissmyfish.html" class="btn">Learn More</a>
-                    </div>
-                </div> 
+        <a href="#game-design" class="section-bubble bubble-game">
+          <div class="bubble-top">
+            <div class="bubble-label">Game<br>Design</div>
+            <i class="fa-solid fa-gamepad bubble-icon"></i>
+          </div>
+          <div class="bubble-bottom">
+            <div class="bubble-desc">Interaction design, Unity, pixel art, puzzle & narrative design</div>
+            <div class="bubble-tags">
+              <span class="bubble-tag" style="background:var(--sky-pale); color:#2D6B9E;">Babbling Secrets</span>
+              <span class="bubble-tag" style="background:var(--sky-pale); color:#2D6B9E;">Protect Yuh Future</span>
             </div>
+          </div>
+        </a>
 
-            <!-- MODELLING SECTION -->
-            <br><br><br>
-            <h2 class="section-title">Architectural Modelling</h2>
-
-            <div class="projects-grid">
-                <!--Shuriken Drip-->
-                <div class="project-card">
-                    <div class="card-img-wrapper">
-                        <img src="modelling-1.png">
-                    </div>
-                </div>
-
-                <!--Nerdy Critters-->
-                <div class="project-card">
-                    <div class="card-img-wrapper">
-                        <img src="modelling-2.png">
-                    </div>
-                </div>  
-                
-                <div class="project-card">
-                    <div class="card-img-wrapper">
-                        <img src="modelling-3.png">
-                    </div>
-                </div>  
-            </div> 
-            <br>
-            <p style="max-width: 1200px; margin: 0 auto; text-align: center;">This is a pool house/recreational area designed in SketchUp for Skyview Estate, a residential construction business. It consists of a pool, ping pong tables, a bar and lounge area.</p>           
-
-        </section>
-
-        <section id="contact" class="contact">
-            <h2 class="section-title">Contact</h2>
-
-            <div class="contact-box">
-                <a href="mailto:cheriefrancis5@gmail.com" class="contact-item">
-                    <i class="fa-solid fa-envelope"></i>
-                    <span>Email</span>
-                </a>
-
-                <a href="https://www.linkedin.com/in/cheriefrancis/" target="_blank" class="contact-item">
-                    <i class="fa-brands fa-linkedin"></i>
-                    <span>LinkedIn</span>
-                </a>
-
-                <a href="tel:+44 7930 688016" class="contact-item">
-                    <i class="fa-solid fa-phone"></i>
-                    <span>Phone</span>
-                </a>
+        <a href="#engineering" class="section-bubble bubble-eng">
+          <div class="bubble-top">
+            <div class="bubble-label">Engineering<br>Projects</div>
+            <i class="fa-solid fa-wrench bubble-icon"></i>
+          </div>
+          <div class="bubble-bottom">
+            <div class="bubble-desc">CNC machining, sand casting, fabrication</div>
+            <div class="bubble-tags">
+              <span class="bubble-tag" style="background:#F5F0E8; color:#8B6340;">Shuriken Drip</span>
+              <span class="bubble-tag" style="background:#F5F0E8; color:#8B6340;">Kiss My Fish</span>
             </div>
-        </section>
+          </div>
+        </a>
 
-        <footer>
+        <a href="#spatial" class="section-bubble bubble-arch">
+          <div class="bubble-top">
+            <div class="bubble-label">Spatial<br>Design</div>
+            <i class="fa-solid fa-building bubble-icon"></i>
+          </div>
+          <div class="bubble-bottom">
+            <div class="bubble-desc">Architectural modelling in SketchUp</div>
+            <div class="bubble-tags">
+              <span class="bubble-tag" style="background:#F5EEF8; color:#7D3C98;">Skyview Estate</span>
+            </div>
+          </div>
+        </a>
 
-            <ul>
-                <li>
-                    <a href="#about">About</a>
-                </li>
+      </div>
+    </div>
 
-                <li>
-                    <a href="#projects">Projects</a>
-                </li>
+    <!-- skills strip -->
+    <div class="skills-strip">
+      <span class="skills-label">Stack</span>
+      <div class="skills-items">
+        <span class="skill-item"><i class="fa-solid fa-pen-to-square"></i> Figma</span>
+        <span class="skill-item"><i class="fa-solid fa-gamepad"></i> Unity</span>
+        <span class="skill-item"><i class="fa-solid fa-code"></i> HTML / CSS / JS</span>
+        <span class="skill-item"><i class="fa-solid fa-pencil"></i> Adobe Creative Suite</span>
+        <span class="skill-item"><i class="fa-solid fa-cube"></i> Fusion 360</span>
+        <span class="skill-item"><i class="fa-brands fa-python"></i> Python</span>
+      </div>
+    </div>
+  </section>
 
-                <li>
-                    <a href="#contact">Contact</a>
-                </li>
-            </ul>
+  <!-- PROJECTS -->
+  <section id="projects" class="projects" style="background: var(--bg-2);">
 
-            <p class="copyright">© All Rights Reserved | Cherié Francis</p>
-        </footer>
+    <!-- UX / Product Design -->
+    <div class="section-group" id="ux-design">
+      <div class="section-group-label">UX Design</div>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="card-img-wrapper"><img src="DesignLibrary.png" alt="Nailed It!"></div>
+        <div class="card-body">
+          <h3>Nailed It!</h3>
+          <p>A computer vision-based virtual nail try-on app connecting customers directly to a salon's product library.</p>
+          <a href="nailedit.html" class="btn">Learn More</a>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="card-img-wrapper"><img src="project-1-portrait.png" alt="Step 2 Pet"></div>
+        <div class="card-body">
+          <h3>Step 2 Pet</h3>
+          <p>A gamified step-tracker app connected to a virtual pet, making fitness habitual and not pressured.</p>
+          <a href="step2pet.html" class="btn">Learn More</a>
+        </div>
+      </div>
+      <!--
+      <div class="project-card">
+        <div class="card-img-wrapper"><img src="project-2.png" alt="[UN]Licensed Flesh"></div>
+        <div class="card-body">
+          <h3>[UN]Licensed Flesh</h3>
+          <p>A biopunk web experience exploring the contrast between legal and illegal body modification procedures.</p>
+          <a href="unlicensed.html" class="btn">Learn More</a>
+        </div>
+      </div> -->
+    </div>
+    
 
+    <br><br>
 
+    <!-- Game Design -->
+    <div class="section-group" id="game-design">
+      <div class="section-group-label">Game Design</div>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="card-img-wrapper"><img src="bs_title.png" alt="Babbling Secrets"></div>
+        <div class="card-body">
+          <h3>Babbling Secrets</h3>
+          <p>A puzzle-adventure game set in a modern Tower of Babel, where language itself is the puzzle.</p>
+          <a href="babblingsecrets.html" class="btn">Learn More</a>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="card-img-wrapper"><img src="protect_environment.png" alt="Protect Yuh Future"></div>
+        <div class="card-body">
+          <h3>Protect Yuh Future</h3>
+          <p>A 2D pixel game where you protect your future — a plant — from a very mischievous goat.</p>
+          <a href="protectfuture.html" class="btn">Learn More</a>
+        </div>
+      </div>
+    </div>
 
+    <br><br>
 
-        <script src="script.js"></script>
-    </body>
+    <!-- Engineering -->
+    <div class="section-group" id="engineering">
+      <div class="section-group-label">Engineering Projects</div>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="card-img-wrapper"><img src="shuriken-drip-hero.png" alt="Shuriken Drip"></div>
+        <div class="card-body">
+          <h3>Shuriken Drip</h3>
+          <p>A spinning jewellery holder developed through CNC machining and lathe fabrication in aluminium and brass.</p>
+          <a href="shurikendrip.html" class="btn">Learn More</a>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="card-img-wrapper"><img src="nerdycritters-hero.png" alt="Nerdy Critters"></div>
+        <div class="card-body">
+          <h3>Nerdy Critters</h3>
+          <p>Animal-shaped metal glasses and trinket holders developed through sand casting in bronze and aluminium.</p>
+          <a href="nerdycritters.html" class="btn">Learn More</a>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="card-img-wrapper"><img src="kissmyfish-hero.png" alt="Kiss My Fish"></div>
+        <div class="card-body">
+          <h3>Kiss My Fish</h3>
+          <p>A koi fish-shaped brass whistle designed in Fusion 360 and CNC-machined from brass stock.</p>
+          <a href="kissmyfish.html" class="btn">Learn More</a>
+        </div>
+      </div>
+    </div>
+
+    <br><br>
+
+    <!-- Spatial Design -->
+    <div class="section-group" id="spatial">
+      <div class="section-group-label">Spatial Design</div>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="card-img-wrapper"><img src="modelling-1.png" alt="Pool house model"></div>
+      </div>
+      <div class="project-card">
+        <div class="card-img-wrapper"><img src="modelling-2.png" alt="Architectural model 2"></div>
+      </div>
+      <div class="project-card">
+        <div class="card-img-wrapper"><img src="modelling-3.png" alt="Architectural model 3"></div>
+      </div>
+    </div>
+    <p class="arch-caption">A pool house and recreational area designed in SketchUp for Skyview Estate — a residential construction business. The space includes a pool, ping pong tables, a bar and a lounge area.</p>
+
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact">
+    <h2 class="section-title">Let's talk</h2>
+    <div class="contact-box">
+      <a href="mailto:cheriefrancis5@gmail.com" class="contact-item">
+        <i class="fa-solid fa-envelope"></i><span>Email</span>
+      </a>
+      <a href="https://www.linkedin.com/in/cheriefrancis/" target="_blank" class="contact-item">
+        <i class="fa-brands fa-linkedin"></i><span>LinkedIn</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <p class="copyright">© All Rights Reserved | Cherié Francis</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
 </html>
