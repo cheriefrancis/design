@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Protect Yuh Future</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:        #4A8C3F;
+      --green-light:  #7DBF6E;
+      --green-pale:   #E8F5E4;
+      --green-dim:    rgba(74, 140, 63, 0.12);
+      --green-border: rgba(74, 140, 63, 0.25);
+      --sky:          #5B9BD5;
+      --sky-light:    #A8CFEE;
+      --sky-pale:     #EAF4FC;
+      --earth:        #8B6340;
+      --earth-dim:    rgba(139, 99, 64, 0.15);
+      --bg:           #F2F9F0;
+      --bg-2:         #E8F4E4;
+      --card-bg:      #FAFFF8;
+      --ink:          #1A2E1A;
+      --muted:        #4A6B45;
+      --border:       rgba(74, 140, 63, 0.2);
+    }
+
+    html { scroll-behavior: smooth; image-rendering: pixelated; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+    }
+
+    /* pixel border utility */
+    .pixel-border {
+      box-shadow:
+        -3px 0 0 var(--green-border),
+         3px 0 0 var(--green-border),
+         0 -3px 0 var(--green-border),
+         0  3px 0 var(--green-border);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--ink);
+      padding: 14px 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 3px solid var(--green-light);
+    }
+    nav a {
+      text-decoration: none; transition: color 0.2s;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px; letter-spacing: 0.04em;
+    }
+    .nav-back { color: var(--green-light); }
+    .nav-back:hover { color: var(--sky-light); }
+    .nav-tags { display: flex; gap: 16px; }
+    .nav-tag {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px; padding: 5px 10px;
+      border: 2px solid;
+      cursor: default;
+    }
+    .nav-tag.green { border-color: var(--green-light); color: var(--green-light); }
+    .nav-tag.sky   { border-color: var(--sky-light);   color: var(--sky-light); }
+
+    /* ── HERO ── */
+    .hero {
+      max-width: 1100px; margin: 0 auto;
+      padding: 72px 48px 56px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 56px; align-items: start;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px; letter-spacing: 0.08em;
+      color: var(--green); margin-bottom: 18px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .hero-eyebrow::before {
+      content: '▶';
+      font-size: 8px;
+      color: var(--green);
+    }
+
+    h1 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      line-height: 1.5;
+      color: var(--ink);
+      margin-bottom: 20px;
+      letter-spacing: -0.01em;
+    }
+    h1 em { font-style: normal; color: var(--green); }
+
+    .hero-desc {
+      font-size: 1rem; color: var(--muted);
+      line-height: 1.8; margin-bottom: 28px; font-weight: 300;
+    }
+
+    /* meta card */
+    .meta-card {
+      background: var(--card-bg);
+      border: 2px solid var(--green-border);
+      border-radius: 0;
+      outline: 2px solid var(--green-border);
+      outline-offset: 3px;
+      padding: 24px 28px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px 24px;
+    }
+    .meta-item label {
+      display: block;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--green);
+      margin-bottom: 5px;
+    }
+    .meta-item p { font-size: 13px; color: var(--ink); font-weight: 400; }
+    .meta-item.full { grid-column: 1 / -1; }
+
+    /* hero image */
+    .hero-img-wrap {
+      width: 100%; aspect-ratio: 4/3;
+      background: linear-gradient(160deg, #7DBF6E 0%, #4A8C3F 40%, #5B9BD5 100%);
+      border: 3px solid var(--ink);
+      outline: 3px solid var(--green-light);
+      outline-offset: 4px;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      image-rendering: pixelated;
+      position: relative;
+    }
+    .hero-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; image-rendering: pixelated; }
+    .hero-img-ph {
+      text-align: center; color: rgba(255,255,255,0.8); padding: 32px;
+    }
+    .hero-img-ph p {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px; line-height: 1.8; color: rgba(255,255,255,0.7);
+    }
+
+    .badge-row { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+    .badge {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px; padding: 5px 10px;
+      border: 2px solid var(--green-border);
+      color: var(--muted); background: var(--card-bg);
+    }
+    .badge.accent { background: var(--green); border-color: var(--green); color: white; }
+    .badge.sky { background: var(--sky); border-color: var(--sky); color: white; }
+
+    /* ── SECTIONS ── */
+    .section {
+      max-width: 1100px; margin: 0 auto;
+      padding: 56px 48px;
+      border-top: 2px solid var(--border);
+    }
+    .section-eyebrow {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--green);
+      margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-eyebrow::before { content: '▶'; font-size: 7px; }
+    .section h2 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(0.9rem, 1.8vw, 1.2rem);
+      line-height: 1.5; margin-bottom: 20px; color: var(--ink);
+    }
+    .section > p {
+      font-size: 15px; color: var(--muted);
+      line-height: 1.8; max-width: 1100px; font-weight: 300;
+    }
+
+    /* ── STORY BOX ── */
+    .story-box {
+      background: var(--ink); color: var(--green-pale);
+      border: 3px solid var(--green-light);
+      padding: 40px 48px; margin-top: 32px;
+      position: relative; overflow: hidden;
+    }
+    .story-box::before {
+      content: '';
+      position: absolute; inset: 6px;
+      border: 1px solid rgba(125, 191, 110, 0.2);
+      pointer-events: none;
+    }
+    .story-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px; letter-spacing: 0.1em;
+      color: var(--green-light); margin-bottom: 14px; display: block;
+    }
+    .story-box h3 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.85rem; line-height: 1.7;
+      color: var(--green-light); margin-bottom: 16px;
+    }
+    .story-box p {
+      font-size: 14px; color: rgba(232,245,228,0.75);
+      line-height: 1.85; max-width: 1100px;
+    }
+
+    /* ── IMAGE GRIDS ── */
+    .img-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 28px 0; align-items: stretch; }
+    .img-grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin: 28px 0; }
+    .img-grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin: 28px 0; }
+
+    .img-card {
+      border: 2px solid var(--green-border);
+      background: var(--card-bg);
+      overflow: hidden;
+    }
+    .img-card-ph {
+      width: 100%; aspect-ratio: 16/9;
+      background: linear-gradient(135deg, var(--green-pale), var(--sky-pale));
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 8px;
+    }
+    .img-card-ph.tall { aspect-ratio: 3/4; }
+    .img-card-ph.square { aspect-ratio: 1/1; }
+    .img-card-ph img { width: 100%; height: auto; display: block; image-rendering: pixelated; object-fit: cover; }
+    .img-card-ph svg { width: 24px; height: 24px; stroke: var(--green); fill: none; stroke-width: 1.5; stroke-linecap: round; opacity: 0.5; }
+    .img-card-ph span { font-family: 'Press Start 2P', monospace; font-size: 7px; color: var(--muted); text-align: center; padding: 0 12px; line-height: 1.8; }
+    .img-caption {
+      padding: 8px 12px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px; color: var(--muted);
+      line-height: 1.6; border-top: 1px solid var(--border);
+    }
+
+    /* wide single image */
+    .img-wide {
+      width: 100%; border: 2px solid var(--green-border);
+      overflow: hidden; margin: 28px 0;
+    }
+    .img-wide-ph {
+      width: 100%; aspect-ratio: 16/6;
+      background: linear-gradient(135deg, var(--green-pale), var(--sky-pale));
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 8px;
+    }
+    .img-wide-ph img { width: 100%; height: auto; display: block; image-rendering: pixelated; }
+    .img-wide-ph svg { width: 28px; height: 28px; stroke: var(--green); fill: none; stroke-width: 1.5; opacity: 0.5; }
+    .img-wide-ph span { font-family: 'Press Start 2P', monospace; font-size: 7px; color: var(--muted); }
+    .img-wide-caption { padding: 10px 14px; font-family: 'Press Start 2P', monospace; font-size: 7px; color: var(--muted); border-top: 1px solid var(--border); }
+
+    /* ── STORY BEATS (timeline) ── */
+    .story-timeline {
+      display: flex; flex-direction: column; gap: 0;
+      border: 2px solid var(--green-border); margin-top: 28px; overflow: hidden;
+    }
+    .story-beat {
+      display: grid; grid-template-columns: 60px 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+    .story-beat:last-child { border-bottom: none; }
+    .beat-num {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px; color: var(--green-light);
+      background: var(--ink); padding: 16px;
+      display: flex; align-items: flex-start; justify-content: center;
+      border-right: 1px solid var(--green-border);
+    }
+    .beat-content { padding: 16px 20px; background: var(--card-bg); }
+    .beat-content h4 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px; color: var(--ink); margin-bottom: 6px; line-height: 1.6;
+    }
+    .beat-content p { font-size: 13px; color: var(--muted); line-height: 1.65; }
+    .beat-tag {
+      display: inline-block; margin-top: 8px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px; padding: 3px 8px;
+      background: var(--green-dim); color: var(--green); border: 1px solid var(--green-border);
+    }
+
+    /* ── TWO-COL CARDS ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 28px; }
+    .card {
+      background: var(--card-bg); border: 2px solid var(--green-border); padding: 24px;
+    }
+    .card h3 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px; color: var(--green);
+      margin-bottom: 12px; line-height: 1.6;
+    }
+    .card p { font-size: 13px; color: var(--muted); line-height: 1.65; }
+    .card ul { list-style: none; margin-top: 10px; }
+    .card ul li {
+      font-size: 13px; color: var(--muted);
+      padding: 5px 0; border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start; gap: 8px;
+    }
+    .card ul li:last-child { border-bottom: none; }
+    .card ul li::before { content: '▸'; color: var(--green); flex-shrink: 0; font-size: 10px; margin-top: 2px; }
+
+    /* ── HIGHLIGHT QUOTE ── */
+    .highlight {
+      border-left: 3px solid var(--green);
+      padding: 12px 20px; margin: 24px 0;
+      background: var(--green-dim);
+    }
+    .highlight p {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px; color: var(--green);
+      line-height: 1.8; font-style: italic;
+    }
+
+    /* ── SPRITE SHOWCASE ── */
+    .sprite-grid {
+      display: grid; grid-template-columns: repeat(6, 1fr);
+      gap: 12px; margin: 28px 0;
+    }
+    .sprite-card {
+      background: var(--card-bg); border: 2px solid var(--green-border);
+      overflow: hidden; text-align: center;
+    }
+    .sprite-ph {
+      width: 100%; aspect-ratio: 1/1;
+      background: var(--green-pale);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sprite-ph img { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
+    .sprite-ph span { font-family: 'Press Start 2P', monospace; font-size: 20px; }
+    .sprite-label {
+      padding: 6px 4px; font-family: 'Press Start 2P', monospace;
+      font-size: 6px; color: var(--muted); line-height: 1.6;
+    }
+
+    .img-card-ph.sprite {
+        aspect-ratio: unset;        /* remove the aspect ratio */
+        max-height: 400px;          /* controls the size */
+        background: var(--green-pale);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;              /* breathing room around the sprite */
+    }
+
+    .img-card-ph.sprite img {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;      /* show full sprite sheet, no cropping */
+        image-rendering: pixelated; /* keep pixel art crisp */
+    }
+
+    .matched .img-card-ph {
+        aspect-ratio: 4/3;
+    }
+
+    .matched .img-card-ph img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    /* ── ANIM STRIP ── */
+    .anim-strip {
+          display: flex;
+        gap: 12px;
+        margin: 20px 0;
+        background: var(--ink);
+        padding: 16px;
+        border: 2px solid var(--green-border);
+        overflow-x: auto;
+        align-items: center;      /* ← vertically centres items */
+    }
+    .anim-frame {
+        flex-shrink: 0;
+        height: 120px;            /* fixed height for all frames */
+        width: auto;              /* width adjusts naturally */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .anim-frame img { width: auto; max-height: 100%; object-fit: contain; image-rendering: pixelated; }
+    .anim-frame span { font-size: 20px; }
+
+    /* ── BUG BOX ── */
+    .bug-box {
+      background: var(--sky); border: 3px solid var(--ink);
+      padding: 32px 40px; margin-top: 28px; position: relative;
+    }
+    .bug-box::before {
+      content: 'BUG → FEATURE';
+      position: absolute; top: -14px; left: 24px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px; background: var(--ink); color: var(--sky-light);
+      padding: 4px 10px;
+    }
+    .bug-box h3 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.9rem; color: white;
+      line-height: 1.6; margin-bottom: 14px;
+    }
+    .bug-box p { font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.8; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 3px solid var(--ink);
+      background: var(--ink);
+      padding: 28px 48px;
+      max-width: 100%; margin: 0;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    footer p { font-family: 'Press Start 2P', monospace; font-size: 8px; color: var(--green-light); line-height: 1.8; }
+    footer a { font-family: 'Press Start 2P', monospace; font-size: 8px; color: var(--sky-light); text-decoration: none; }
+    footer a:hover { color: var(--green-light); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 36px; padding: 48px 24px 40px; }
+      .sprite-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 768px) {
+      nav { padding: 12px 20px; }
+      .section { padding: 40px 20px; }
+      .two-col { grid-template-columns: 1fr; }
+      .img-grid-3, .img-grid-4 { grid-template-columns: 1fr 1fr; }
+      nav .nav-tags .nav-tag:last-child { display: none; }
+      footer { flex-direction: column; gap: 12px; padding: 20px; }
+    }
+    @media (max-width: 480px) {
+      .img-grid-2, .img-grid-3 { grid-template-columns: 1fr; }
+      .meta-card { grid-template-columns: 1fr; }
+      .sprite-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    /* pixel scanline on hero */
+    .hero-img-wrap::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px);
+      pointer-events: none;
+    }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+    .hero > * { animation: fadeUp 0.5s ease both; }
+    .hero > *:nth-child(2) { animation-delay: 0.1s; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-back">← Back to projects</a>
+  <div class="nav-tags">
+    <span class="nav-tag green">Pixel Art Game</span>
+    <span class="nav-tag sky">Solo Project</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <p class="hero-eyebrow">University of Edinburgh · 2025</p>
+    <h1>Protect<br><em>Yuh Future</em></h1>
+    <p class="hero-desc">A pixel art adventure game about protecting your future — literally. A goat walks into your yard, knocks down your fence, and tries to eat your plant. Chase it. Catch it. Get your revenge.</p>
+
+    <div class="meta-card">
+      <div class="meta-item">
+        <label>Course</label>
+        <p>Design for Interactive Media</p>
+      </div>
+      <div class="meta-item">
+        <label>Year</label>
+        <p>2025</p>
+      </div>
+      <div class="meta-item">
+        <label>Tools</label>
+        <p>Unity · C# · Pixel Studio</p>
+      </div>
+      <div class="meta-item">
+        <label>Platform</label>
+        <p>PC</p>
+      </div>
+      <div class="meta-item">
+        <label>Role</label>
+        <p>Pixel Art, Programming, Game Design</p>
+      </div>
+      <div class="meta-item">
+        <label>Inspired by</label>
+        <p>Pokémon · Stardew Valley</p>
+      </div>
+      <div class="meta-item full">
+        <label>Walkthrough</label>
+        <a class="meta-link" href="https://media.ed.ac.uk/media/1_wkib2olg" target="_blank">Watch video walkthrough →</a>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="hero-img-wrap">
+      <!-- Replace with: <img src="pyf-hero.png" alt="Protect Yuh Future gameplay"> -->
+      <img src="protect_chase.png" alt="Protect Yuh Future gameplay">
+    </div>
+    <div class="badge-row">
+      <span class="badge accent">Pixel Art</span>
+      <span class="badge sky">Unity</span>
+      <span class="badge">Hand Drawn</span>
+      <span class="badge">First Game</span>
+    </div>
+  </div>
+</section>
+
+<!-- ORIGIN STORY -->
+<section class="section">
+  <p class="section-eyebrow">Origin</p>
+  <h2>Inspired by a true story</h2>
+  <p>This game is based on a real childhood memory — As a graduation tradition at my high school, students are each given a plant that represents how their future will grow. The idea is you nurture it, watch it grow alongside you.</p>
+
+  <div class="story-box">
+    <span class="story-label">// The inspiration</span>
+    <h3>"A goat ate my friend's 'future'"</h3>
+    <p>When my friend returned for sixth form, she told me a goat had walked into her yard and eaten her graduation plant. She was absolutely furious, but that image of a goat entering her yard and eating her future, never left me. This game is that moment, turned interactive.</p>
+  </div>
+
+  <div class="img-grid-2 matched" style="margin-top: 28px;">
+    <div class="img-card">
+      <div class="img-card-ph">
+        <!-- Replace with: <img src="pyf-concept.png" alt="Early concept art"> -->
+        <img src="protect_sketch2.png" alt="Early concept art">
+      </div>
+      <div class="img-caption">Early concept — the yard and fence layout</div>
+    </div>
+    <div class="img-card">
+      <div class="img-card-ph">
+        <!-- Replace with: <img src="pyf-inspo.png" alt="Stardew / Pokemon inspiration"> -->
+        <img src="protect_mood.png" alt="Stardew / Pokemon inspiration">
+      </div>
+      <div class="img-caption">Inspired by Pokémon and Stardew Valley's pixel warmth</div>
+    </div>
+  </div>
+</section>
+
+<!-- STORY BEATS -->
+<section class="section">
+  <p class="section-eyebrow">Gameplay Story</p> 
+  <!--  <h2>The story so far...</h2> -->
+  <p>The game follows a girl who just graduated high school, then immediately has to defend her future from a very hungry goat. The story unfolds in clear steps, each tied to a player interaction.</p>
+
+  <div class="story-timeline">
+    <div class="story-beat">
+      <span class="beat-num">01</span>
+      <div class="beat-content">
+        <h4>Receive the plant</h4>
+        <p>Talk to an NPC who gifts you a plant, a symbol of your future growing alongside you. Press E to interact and read the dialogue.</p>
+        <span class="beat-tag">Press E to interact</span>
+      </div>
+    </div>
+    <div class="story-beat">
+      <span class="beat-num">02</span>
+      <div class="beat-content">
+        <h4>Plant it in your yard</h4>
+        <p>Find the right spot and plant your graduation gift. It's yours to protect now.</p>
+        <span class="beat-tag">Press E to plant</span>
+      </div>
+    </div>
+    <div class="story-beat">
+      <span class="beat-num">03</span>
+      <div class="beat-content">
+        <h4>Collect wood and build a fence</h4>
+        <p>Gather wood scattered around the yard to build a protective fence around your plant. Because you know something's coming.</p>
+        <span class="beat-tag">Press E to collect</span>
+      </div>
+    </div>
+    <div class="story-beat">
+      <span class="beat-num">04</span>
+      <div class="beat-content">
+        <h4>The goat arrives</h4>
+        <p>A goat walks into the yard, knocks down the fence, and goes straight for the plant.</p>
+        <span class="beat-tag">Cutscene</span>
+      </div>
+    </div>
+    <div class="story-beat">
+      <span class="beat-num">05</span>
+      <div class="beat-content">
+        <h4>Chase the goat</h4>
+        <p>Run the goat down across the yard. WASD to move. Press E to catch it when close enough.</p>
+        <span class="beat-tag">WASD + Press E to catch</span>
+      </div>
+    </div>
+    <div class="story-beat">
+      <span class="beat-num">06</span>
+      <div class="beat-content">
+        <h4>Get your revenge in the boxing ring</h4>
+        <p>Originally a bug — the player could kick the goat and it would fly across the screen. Everyone loved it so much it became a minigame: you and the goat in a boxing ring to get revenge.</p>
+        <span class="beat-tag">Bug → Feature ⭐</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREENSHOTS -->
+<section class="section">
+  <p class="section-eyebrow">Screenshots</p>
+  <h2>In-game</h2>
+  <p>All environments, characters, and assets hand-drawn in Pixel Studio.</p>
+
+  <div class="img-wide">
+    <div class="img-wide-ph">
+      <!-- Replace with: <img src="pyf-overworld.png" alt="Overworld view"> -->
+      <img src="protect_environment.png" alt="Environment view">
+    </div>
+    <div class="img-wide-caption">The yard — home base, fence location, and where it all goes wrong</div>
+  </div>
+
+  <div class="img-grid-3">
+    <div class="img-card">
+      <div class="img-card-ph">
+        <!-- Replace with: <img src="pyf-npc.png" alt="NPC dialogue"> -->
+        <img src="protect_npcdia.png" alt="NPC dialogue">
+      </div>
+      <div class="img-caption">NPC dialogue — receiving the plant</div>
+    </div>
+
+    <div class="img-card">
+      <div class="img-card-ph">
+        <!-- Replace with: <img src="pyf-plant.png" alt="Planting the plant"> -->
+        <img src="protect_plant.png" alt="Planting the plant">
+      </div>
+      <div class="img-caption">Planting your graduation gift</div>
+    </div>
+
+    <div class="img-card">
+      <div class="img-card-ph">
+        <!-- Replace with: <img src="pyf-fence.png" alt="Building the fence"> -->
+        <img src="protect_wood.png" alt="Building the fence">
+      </div>
+      <div class="img-caption">Building the fence from collected wood</div>
+    </div>
+
+    <div class="img-card">
+      <div class="img-card-ph">
+        <!-- Replace with: <img src="pyf-goat-arrive.png" alt="Goat arriving"> -->
+        <img src="protect_goatarrives.png" alt="Goat arriving">
+      </div>
+      <div class="img-caption">The goat arrives and knocks the fence</div>
+    </div>
+
+    <div class="img-card">
+      <div class="img-card-ph">
+        <!-- Replace with: <img src="pyf-chase.png" alt="Chasing the goat"> -->
+        <img src="protect_chase.png" alt="Chasing the goat">
+      </div>
+      <div class="img-caption">The chase — WASD across the yard</div>
+    </div>
+
+    <div class="img-card">
+      <div class="img-card-ph">
+        <!-- Replace with: <img src="pyf-boxing.png" alt="Boxing ring minigame"> -->
+        <img src="protect_boxing.png" alt="Boxing ring minigame">
+      </div>
+      <div class="img-caption">The boxing ring — get your revenge</div>
+    </div>
+  </div>
+</section>
+
+<!-- PIXEL ART & SPRITES -->
+<section class="section">
+  <p class="section-eyebrow">Art & Sprites</p>
+  <h2>Every pixel, by hand</h2>
+  <p>All sprites, tiles, environments, and animations drawn in Pixel Studio — no asset packs. The palette draws from the memory: bright Caribbean greens, sky blue, warm earth.</p>
+
+  <div class="sprite-grid">
+    <div class="sprite-card">
+      <div class="sprite-ph">
+        <img src="protect_avatar1.png">
+      </div>
+      <div class="sprite-label">Player Avatar</div>
+    </div>
+    <div class="sprite-card">
+      <div class="sprite-ph">
+        <!-- Replace with: <img src="sprite-char-walk.gif" alt="Character walk"> -->
+        <img src="protect_avatar2.png">
+      </div>
+      <div class="sprite-label">NPC Avatar</div>
+    </div>
+    <div class="sprite-card">
+      <div class="sprite-ph">
+        <img src="protect_exclamation.png">
+      </div>
+      <div class="sprite-label">Exclamation - interaction indicator</div>
+    </div>
+    <div class="sprite-card">
+      <div class="sprite-ph">
+        <img src="protect_dialogue.png">
+      </div>
+      <div class="sprite-label">Dialogue - NPC interaction indicator</div>
+    </div>
+    <div class="sprite-card">
+      <div class="sprite-ph">
+        <img src="protect_hand.png">
+      </div>
+      <div class="sprite-label">Hand - able to ineract</div>
+    </div>
+    <div class="sprite-card">
+      <div class="sprite-ph">
+        <img src="protect_sapling.png">
+      </div>
+      <div class="sprite-label">Cherry sapling - future we are trying to protect</div>
+    </div>
+  </div>
+
+  <!-- animation strip -->
+  <p style="font-family:'Press Start 2P',monospace; font-size:8px; color:var(--green); margin-bottom:12px;">// Walk animation sprite sheets for player and goat</p>
+  <div class="img-grid-2">
+    <div class="img-card">
+      <div class="img-card-ph sprite">
+        <!-- Replace with: <img src="pyf-tileset.png" alt="Tileset"> -->
+        <img src="PlayerSpriteSheet.png" alt="Tileset">
+      </div>
+      <div class="img-caption">Player Animation Sprite Sheet</div>
+    </div>
+    <div class="img-card">
+      <div class="img-card-ph sprite">
+        <!-- Replace with: <img src="pyf-palette.png" alt="Colour palette"> -->
+        <img src="GoatSpriteSheet.png" alt="Tileset">
+      </div>
+      <div class="img-caption">Goat Animation Sprite Sheet</div>
+    </div>
+  </div>
+
+  <p style="font-family:'Press Start 2P',monospace; font-size:8px; color:var(--green); margin-bottom:12px;">// Additional Sprites</p>
+  <div class="anim-strip">
+    <!-- Replace each frame with: <img src="walk-frame-1.png"> etc -->
+         <img src="protect_house.png">
+    <img src="protect_fence.png">
+    <img src="protect_fence3.png">
+    <img src="protect_fence1.png">
+    <img src="protect_brokenFence.png">
+    <img src="protect_fence4.png">
+    <img src="protect_dirt.png">
+    <img src="protect_grass.png">
+    <img src="protect_flower.png">
+    <img src="protect_paths.png">
+  </div>
+
+</section>
+
+<!-- THE BUG THAT BECAME A FEATURE -->
+ <!--
+<section class="section">
+  <p class="section-eyebrow">Design Decision</p>
+  <h2>The best feature was a bug</h2>
+  <p>During development, a bug meant the player could kick the goat. It wasn't intentional. But when playtesters discovered it, the reaction was unanimous — everyone loved it. So it stayed.</p>
+
+  <div class="bug-box">
+    <h3>"She shouldn't have been able to kick the goat."</h3>
+    <p>It was a collision bug. But playtesters went out of their way to find the goat just to kick it. The emotional release of finally getting revenge on the thing that ate your future was too good to remove. It became a proper minigame — a boxing ring where you face the goat one-on-one. Lesson learned: playtest everything, and never delete a bug before you understand why people love it.</p>
+  </div>
+
+  <div class="img-grid-2" style="margin-top: 28px;">
+    <div class="img-card">
+      <div class="img-card-ph">
+
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+        <span>pyf-bug.gif — the original kick bug</span>
+      </div>
+      <div class="img-caption">The accidental kick — beloved by everyone</div>
+    </div>
+    <div class="img-card">
+      <div class="img-card-ph">
+
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+        <span>pyf-boxing-full.png — the boxing ring minigame</span>
+      </div>
+      <div class="img-caption">The bug evolved into a full boxing minigame</div>
+    </div>
+  </div>
+</section>
+-->
+
+<!-- CONTROLS -->
+<section class="section">
+  <p class="section-eyebrow">Game Design</p>
+  <h2>Controls & interactions</h2>
+
+  <div class="two-col">
+    <div class="card">
+      <h3>Movement</h3>
+      <ul>
+        <li>WASD — move the character</li>
+        <li>Navigate between areas and chase the goat</li>
+        <li>Approach objects and NPCs to trigger interactions</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Interactions</h3>
+      <ul>
+        <li>E — interact with NPCs, items, objects</li>
+        <li>E — catch the goat when close enough</li>
+        <li>Arrow / Next button — advance dialogue</li>
+        <li>E — plant the graduation plant</li>
+        <li>E — collect wood for fence building</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Protect Yuh Future · Design for Interactive Media · Edinburgh 2025</p>
+  <a href="index.html">← Back to all projects</a>
+</footer>
+
+</body>
+</html>
